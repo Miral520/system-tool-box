@@ -10,7 +10,7 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
-    "baseUrl": ".",
+    "baseUrl": "./src/",
     "types": [
       "webpack-env"
     ],
@@ -22,33 +22,38 @@
     ]
   },
   "paths": {
-    "@/*": [
-      "src/*"
+    "store": [
+      "store/index"
     ],
-    "@cpt/*": [
-      "src/components/*"
+    "router": [
+      "router/index"
     ],
-    "@views/*": [
-      "src/pages/*"
+    "cpt/*": [
+      "components/*"
     ],
-    "@scss/*": [
-      "src/scss/*"
+    "scss/*": [
+      "scss/*"
     ],
-    "@utils/*": [
-      "src/utils/*"
+    "utils/*": [
+      "utils/*"
     ],
-    "@entry/*": [
-      "src/entry/*"
+    "entry/*": [
+      "entry/*"
+    ],
+    "views/*": [
+      "views/*"
+    ],
+    "assets/*": [
+      "assets/*"
     ],
   },
   "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "tests/**/*.ts",
-    "tests/**/*.tsx"
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.vue",
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "dist"
   ]
 }

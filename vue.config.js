@@ -1,7 +1,7 @@
 const path = require('path');
 
 function resolve (dir) {
-  return path.join(__dirname, dir)
+  return path.resolve(__dirname, dir)
 }
 
 module.exports = {
@@ -11,7 +11,7 @@ module.exports = {
     sourceMap: true,
     loaderOptions: {
       scss: {
-        prependData: `@import "~@/scss/variables.scss";`
+        prependData: `@import "~scss/common.scss";`
       },
       less: {
         lessOptions: {
@@ -30,8 +30,13 @@ module.exports = {
     // 设置目录别名
     config.resolve.alias
         .set('@', resolve('src'))
-        .set('@assets',resolve('src/assets'))
-        .set('@cpt',resolve('src/components'))
-        .set('@entry',resolve('src/entry'))
+        .set('assets',resolve('src/assets'))
+        .set('cpt',resolve('src/components'))
+        .set('entry',resolve('src/entry'))
+        .set('router',resolve('src/router'))
+        .set('scss',resolve('src/scss'))
+        .set('store',resolve('src/store'))
+        .set('utils',resolve('src/utils'))
+        .set('views',resolve('src/views'))
   },
 }

@@ -1,3 +1,9 @@
 @import "./color.scss";
 @import "./mixin.scss";
 @import "./variables.scss";
+
+* {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}

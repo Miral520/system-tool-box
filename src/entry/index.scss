@@ -2,19 +2,130 @@
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-  }
-  
-  #nav {
-    padding: 30px;
-  
-    a {
-      font-weight: bold;
-      color: #2c3e50;
-  
-      &.router-link-exact-active {
-        color: #42b983;
-      }
+    @include full-layout;
+    .ml_layout {
+        @include full-layout;
+        .ml_header {
+            height: $head_height;
+            line-height: normal;
+            padding: 0 15px;
+            background: #fff;
+            border-bottom: 1px solid #e8e8e8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            .ml_header-left, .ml_header-right {
+                display: flex;
+                align-items: center;
+            }
+            .ml_header-left {
+                margin: 0;
+                padding: 0;
+                height: 100%;
+                &:hover {
+                    .ml_header-ctrl {
+                        .ml_header-ctrl-btn {
+                            .anticon {
+                                opacity: 1;
+                            }
+                        }
+                    }
+                }
+                .ml_header-ctrl {
+                    margin-right: 8px;
+                    &:last-child {
+                        margin: 0;
+                    }
+                    .ml_header-ctrl-btn {
+                        width: $head-handle-btn_size;
+                        height: $head-handle-btn_size;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        border-radius: 50%;
+                        color: $head-handle_color;
+                        font-size: $head-handle_size;
+                        font-weight: lighter;
+                        overflow: hidden;
+                        &.minus {
+                            background: $head-handle_yellow;
+                            @include border($head-handle-border_yellow);
+                        }
+            
+                        &.fullscreen {
+                            background: $head-handle_green;
+                            @include border($head-handle-border_green);
+                        }
+            
+                        &.close {
+                            background: $head-handle_red;
+                            @include border($head-handle-border_red);
+                        }
+                        .anticon {
+                            opacity: 0;
+                        }
+                    }
+                }
+            }
+            .ml_header-right {
+                justify-content: center;
+            }
+        }
+        .ml_menu {
+            .ml_menu-main {
+                border: none;
+                &.ant-menu-inline-collapsed {
+                    width: 50px;
+                    .ml_menu-main-list {
+                        padding: 0 !important;
+                        text-align: center;
+                    }
+                }
+                .ml_menu-main-list {
+                    &:first-child {
+                        margin-top: 0;
+                    }
+                }
+            }
+        }
+        .ml_main {
+            border-left: 1px solid #e8e8e8;
+        }
+        .ml_breadcrumb {
+            padding: 0 20px;
+            background: #f0f2f5;
+            height: 37px;
+            line-height: 37px;
+            .ml_breadcrumb-title {
+                margin-right: 10px;
+                color: #999;
+            }
+            .ant-breadcrumb {
+                padding: 8px 0;
+                display: inline-block;
+            }
+        }
+        .ml_footer {
+            text-align: center;
+            font-size: 12px;
+            padding: 12px 0;
+        }
+        .ml_content {
+            padding: 0 15px;
+            .ml_content-card {
+                box-sizing: border-box;
+                padding: 15px 5px;
+                overflow: hidden;
+                background: #fff;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+                border: 1px solid #e8e8e8;
+                border-radius: 3px;
+                @include full-layout;
+                .ml_content-main {
+                    box-sizing: border-box;
+                    padding: 0 25px;
+                }
+            }
+        }
     }
 }
