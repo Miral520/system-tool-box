@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
+import store from 'store'
 import Home from 'views/Home/index.vue'
 
 Vue.use(VueRouter)
@@ -23,6 +24,11 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+router.beforeEach((to: any, from: any, next: any) => {
+  store.commit('setLocation', to.name);
+  next();
 })
 
 export default router

@@ -12,13 +12,6 @@ export default<any> {
             // 面包屑
             breadcrumb: {
                 show: true,
-                dataList: [
-                    {
-                        name: 'home',
-                        label: '首页',
-                        to: '/',
-                    },
-                ],
             },
 
             // 底部

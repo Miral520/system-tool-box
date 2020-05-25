@@ -41,14 +41,16 @@
           <a-layout-header class="ml_breadcrumb" v-show="breadcrumb.show">
             <span class="ml_breadcrumb-title">当前位置: </span>
             <a-breadcrumb separator=">">
-              <a-breadcrumb-item v-for="item in breadcrumb.dataList" :key="item.name">{{ item.label }}</a-breadcrumb-item>
+              <a-breadcrumb-item>{{ $store.state.breadcrumb }}</a-breadcrumb-item>
             </a-breadcrumb>
           </a-layout-header>
           <a-layout-content class="ml_content">
             <div class="ml_content-card">
               <vue-scroll>
                 <div class="ml_content-main">
-                  <router-view/>
+                  <keep-alive>
+                    <router-view/>
+                  </keep-alive>
                 </div>
               </vue-scroll>
             </div>
