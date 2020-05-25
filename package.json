@@ -10,6 +10,7 @@
     "app": "npm run serve && npm run el"
   },
   "dependencies": {
+    "animate.css": "^4.1.0",
     "ant-design-vue": "^1.6.0",
     "core-js": "^3.6.4",
     "vue": "^2.6.11",
