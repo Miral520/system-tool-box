@@ -47,17 +47,23 @@ export default<any> {
 
             // 右上角设置
             settingData: {
-                userName: '测试用户',
+                userName: '',
                 userDesc: '用户描述',
                 icon: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
                 hasMsg: true,
-                menu: [
+
+                // 公共菜单
+                publicMenu: [
                     {
                         label: '设置',
                         icon: 'setting',
                         hasMsg: true,
                         to: '',
                     },
+                ],
+
+                // 登录后的菜单，限制为2个
+                loginMenu: [
                     {
                         label: '用户',
                         icon: 'user',
@@ -65,8 +71,18 @@ export default<any> {
                         to: '',
                     },
                     {
-                        label: '更多',
-                        icon: 'ellipsis',
+                        label: '登出',
+                        icon: 'logout',
+                        hasMsg: false,
+                        to: '',
+                    },
+                ],
+
+                // 未登录的菜单
+                logoutMenu: [
+                    {
+                        label: '登录',
+                        icon: 'login',
                         hasMsg: false,
                         to: '',
                     },
