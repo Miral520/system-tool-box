@@ -1,13 +1,13 @@
 {
   "name": "vue_electron",
-  "version": "0.1.0",
+  "version": "0.0.1-alpha.0",
   "main": "electron.config.js",
   "private": true,
   "scripts": {
-    "win": "electron .",
+    "win": "set NODE_ENV=development&&electron .",
+    "app": "set NODE_ENV=production&&electron .",
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "app": "npm run serve && npm run el"
+    "build": "vue-cli-service build"
   },
   "dependencies": {
     "animate.css": "^4.1.0",

@@ -24,7 +24,9 @@ function createWindow () {
 
   win.loadURL('http://localhost:8080/');
 
-  win.webContents.openDevTools();
+  if(process.env.NODE_ENV === 'development') {
+    win.webContents.openDevTools();
+  }
 
   // 监听最小化
   ipcMain.on('min', (e, arg) => {
