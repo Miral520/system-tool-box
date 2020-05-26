@@ -4,8 +4,6 @@ const os = require('os');
 
 let screenData = null; // 屏幕数据
 
-console.log(process);
-
 function createWindow () {
   const win = new BrowserWindow({
     width: process.env.NODE_ENV === 'development' ? 1200 : 310,
