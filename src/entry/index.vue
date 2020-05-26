@@ -11,12 +11,33 @@
 
       <!-- 主内容 -->
       <div class="ml_frame" :class="isFullscreen ? '' : 'hasShadow'" key="main" v-else>
+        <!-- 关闭提示 -->
         <a-modal v-model="float.vsisible" :closable="false" title="确认关闭" okText="确定" cancelText="取消" @ok="closeHandle" @cancel="cancelHandle" centered>
           <p class="ml_float-text">是否要关闭应用程序？</p>
           <div class="ml_float-checkbox">
             <a-checkbox :checked="!float.show" @change="nextBoxHandle">不再显示</a-checkbox>
           </div>
         </a-modal>
+
+        <!-- 关于 -->
+        <a-modal v-model="about.visible" :closable="false" title="关于" destroyOnClose centered>
+          <div class="about_layout">
+            <div class="about_pic">
+              <a-icon type="github" />
+            </div>
+            <ul class="about_text">
+              <li class="about_text-list" v-for="(item, key) in about.data" :key="key">
+                <span class="title">{{ item.title }}</span>
+                <span class="value">{{ item.value }}</span>
+              </li>
+            </ul>
+          </div>
+          <div class="about_btn" slot="footer">
+            <a-button type="primary" shape="round" @click="handleAbout">知道了</a-button>
+          </div>
+        </a-modal>
+
+        <!-- 主内容 -->
         <a-layout class="ml_layout">
           <a-layout-header class="ml_header">
             <ul class="ml_header-left">
@@ -60,7 +81,7 @@
                     </div>
                     <ul class="setting_menu-actions">
                       <li class="setting_menu-actions-list" v-for="(item, index) in settingData.publicMenu" :key="`public_${index}`">
-                        <a href="javascript:void(0)" class="setting_menu-actions-link">
+                        <a href="javascript:void(0)" class="setting_menu-actions-link" @click="runFn(item.fn)">
                           <a-tooltip>
                             <template slot="title">{{ item.label }}</template>
                             <a-badge :dot="item.hasMsg">
@@ -70,7 +91,7 @@
                         </a>
                       </li>
                       <li class="setting_menu-actions-list" v-for="(item, index) in settingData.loginMenu" :key="`login_${index}`">
-                        <a href="javascript:void(0)" class="setting_menu-actions-link">
+                        <a href="javascript:void(0)" class="setting_menu-actions-link" @click="runFn(item.fn)">
                           <a-tooltip>
                             <template slot="title">{{ item.label }}</template>
                             <a-badge :dot="item.hasMsg">
@@ -86,7 +107,7 @@
                   <div class="logout" v-else>
                     <a-menu>
                       <a-menu-item v-for="(item, index) in settingData.publicMenu" :key="`public_${index}`">
-                        <a href="javascript:void(0)">
+                        <a href="javascript:void(0)" @click="runFn(item.fn)">
                           <a-badge :dot="item.hasMsg">
                             <a-icon :type="item.icon" />
                             <span>{{ item.label }}</span>
@@ -94,7 +115,7 @@
                         </a>
                       </a-menu-item>
                       <a-menu-item v-for="(item, index) in settingData.logoutMenu" :key="`logout_${index}`">
-                        <a href="javascript:void(0)">
+                        <a href="javascript:void(0)" @click="runFn(item.fn)">
                           <a-badge :dot="item.hasMsg">
                             <a-icon :type="item.icon" />
                             <span>{{ item.label }}</span>

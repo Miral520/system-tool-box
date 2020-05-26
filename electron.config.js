@@ -4,10 +4,12 @@ const os = require('os');
 
 let screenData = null; // 屏幕数据
 
+console.log(process);
+
 function createWindow () {
   const win = new BrowserWindow({
-    width: 310,
-    height: 345,
+    width: process.env.NODE_ENV === 'development' ? 1200 : 310,
+    height: process.env.NODE_ENV === 'development' ? 800 : 345,
     minWidth: 310,
     minHeight: 345,
     center: true,
@@ -22,11 +24,13 @@ function createWindow () {
     },
   });
 
-  win.loadURL('http://localhost:8080/');
-
+  let loadAdd = 'http://localhost:8080/';
   if(process.env.NODE_ENV === 'development') {
+    loadAdd += '?mode=dev';
     win.webContents.openDevTools();
   }
+
+  win.loadURL(loadAdd);
 
   // 监听最小化
   ipcMain.on('min', (e, arg) => {
@@ -76,6 +80,8 @@ function createWindow () {
       arch: os.arch(), // 返回为其编译 Node.js 二进制文件的操作系统的 CPU 架构。 可能的值有：'arm'、 'arm64'、 'ia32'、 'mips'、 'mipsel'、 'ppc'、 'ppc64'、 's390'、 's390x'、 'x32' 和 'x64'。
       EOL: os.EOL, // 操作系统特定的行末标志。在 POSIX 上是 \n。在 Windows 上是 \r\n。
       screen: screenData, // 屏幕尺寸
+      version: process.env.npm_package_version, // 软件版本号
+      author: process.env.npm_package_author_name, // 软件作者
     });
   });
 };

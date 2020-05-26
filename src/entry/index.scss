@@ -278,3 +278,36 @@
         }
     }
 }
+
+.about_layout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .about_pic, .about_text {
+        margin: 0;
+    }
+    .about_pic {
+        font-size: 72px;
+        margin-right: 30px;
+    }
+    .about_text {
+        .about_text-list {
+            font-size: 14px;
+            color: #999;
+            height: 16px;
+            display: flex;
+            align-content: center;
+            margin-bottom: 10px;
+            .title {
+                width: 80px;
+            }
+            .value {
+                color: #333;
+            }
+        }
+    }
+}
+.about_btn {
+    width: 100%;
+    text-align: center;
+}

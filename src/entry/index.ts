@@ -38,7 +38,7 @@ export default<any> {
             loadingWin: {
                 show: true,
                 percent: 0,
-                sec: 3,
+                sec: this.$var.startTime,
                 strokeColor: {
                     from: '#108ee9',
                     to: '#87d068',
@@ -58,23 +58,23 @@ export default<any> {
                         label: '设置',
                         icon: 'setting',
                         hasMsg: true,
-                        to: '',
+                        fn: '',
+                    },
+                    {
+                        label: '关于',
+                        icon: 'info-circle',
+                        hasMsg: false,
+                        fn: 'handleAbout',
                     },
                 ],
 
-                // 登录后的菜单，限制为2个
+                // 登录后的菜单，限制为1个
                 loginMenu: [
-                    {
-                        label: '用户',
-                        icon: 'user',
-                        hasMsg: false,
-                        to: '',
-                    },
                     {
                         label: '登出',
                         icon: 'logout',
                         hasMsg: false,
-                        to: '',
+                        fn: '',
                     },
                 ],
 
@@ -84,13 +84,34 @@ export default<any> {
                         label: '登录',
                         icon: 'login',
                         hasMsg: false,
-                        to: '',
+                        fn: '',
                     },
                 ],
+            },
+
+            // 关于
+            about: {
+                visible: false,
+                data: {
+                    author: {
+                        title: '开发',
+                        value: '',
+                    },
+                    devDate: {
+                        title: '项目始于',
+                        value: '2020-05',
+                    },
+                    version: {
+                        title: '版本号',
+                        value: '',
+                    },
+                },
             },
         }
     },
     created() {
+        this.init();
+
         this.getOsType();
 
         this.$nextTick(() => {
@@ -98,6 +119,29 @@ export default<any> {
         });
     },
     methods: {
+        // 初始化
+        init() {
+            let mode = (<any>this).$fn.getUrlSearch('mode');
+            if(mode === 'dev') {
+                (<any>this).$store.commit('setMode', mode);
+                (<any>this).loadingWin.show = false;
+            }
+        },
+
+        // dom执行方法
+        runFn(name: any) {
+            (<any>this)[name]();
+        },
+
+        // 关于
+        handleAbout() {
+            if(!(<any>this).about.visible) {
+                (<any>this).about.data.author.value = (<any>this).sysInfo.author;
+                (<any>this).about.data.version.value = (<any>this).sysInfo.version;
+            }
+            (<any>this).about.visible = !(<any>this).about.visible;
+        },
+
         // 关闭提示
         closeFloatHandle() {
             if((<any>this).float.show) {
@@ -138,7 +182,7 @@ export default<any> {
         // 获取系统信息
         getOsType() {
             global.ipcRenderer.on('sys', (event: any, message: any) => {
-              (<any>this).sysInfo = message;
+                (<any>this).sysInfo = message;
             });
         },
 
@@ -153,15 +197,17 @@ export default<any> {
 
         // 加载
         loadApp(callback: any) {
-            let timer = setInterval(() => {
-                if ((<any>this).loadingWin.percent >= 100) {
-                    clearInterval(timer);
-                    if(callback) {
-                        callback();
+            if((<any>this).loadingWin.show) {
+                let timer = setInterval(() => {
+                    if ((<any>this).loadingWin.percent >= 100) {
+                        clearInterval(timer);
+                        if(callback) {
+                            callback();
+                        }
                     }
-                }
-                (<any>this).loadingWin.percent += Math.round(100 / parseInt((<any>this).loadingWin.sec) / 20);
-            }, 50); 
+                    (<any>this).loadingWin.percent += Math.round(100 / parseInt((<any>this).loadingWin.sec) / 20);
+                }, 50);
+            }
         },
     },
 }

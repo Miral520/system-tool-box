@@ -1,7 +1,8 @@
 {
   "name": "vue_electron",
-  "version": "0.0.1-alpha.0",
+  "version": "0.0.1-alpha.1",
   "main": "electron.config.js",
+  "author": "Miral",
   "private": true,
   "scripts": {
     "win": "set NODE_ENV=development&&electron .",
