@@ -1,12 +1,15 @@
 <template>
   <div id="app">
     <transition name="custom-classes-transition" :duration="{ enter: 2000, leave: 2000 }" enter-active-class="animate__animated animate__fadeIn" leave-active-class="animate__animated animate__fadeOut">
+      <!-- loading -->
       <div class="ml_loading" v-if="loadingWin.show" key="loading">
         <img class="ml_loading-bg" :src="require('assets/start_main.png')" />
         <div class="ml_loading-progress">
           <a-progress :percent="loadingWin.percent" :strokeWidth="12" :strokeColor="loadingWin.strokeColor" status="active" />
         </div>
       </div>
+
+      <!-- 主内容 -->
       <div class="ml_frame" :class="isFullscreen ? '' : 'hasShadow'" key="main" v-else>
         <a-modal v-model="float.vsisible" :closable="false" title="确认关闭" okText="确定" cancelText="取消" @ok="closeHandle" @cancel="cancelHandle" centered>
           <p class="ml_float-text">是否要关闭应用程序？</p>
@@ -34,7 +37,39 @@
               </li>
             </ul>
             <div class="ml_header-right">
-              <a-button shape="circle" icon="setting" size="small" />
+              <a-dropdown overlayClassName="setting_menu">
+                <a-badge :dot="settingData.hasMsg">
+                  <a class="ml_header-right_setting" @click="e => e.preventDefault()">
+                    <a-icon type="appstore" />
+                  </a>
+                </a-badge>
+                <a-card class="setting_menu-layout" slot="overlay">
+                  <div class="setting_menu-main">
+                    <a-card-meta :title="settingData.userName" :description="settingData.userDesc">
+                      <a-avatar
+                        slot="avatar"
+                        :size="48"
+                        :src="settingData.icon"
+                      >
+                        <span v-if="settingData.userName && !settingData.icon">{{ settingData.userName.substring(0, 1) }}</span>
+                        <a-icon slot="icon" type="user" v-if="!settingData.userName && !settingData.icon" />
+                      </a-avatar>
+                    </a-card-meta>
+                  </div>
+                  <ul class="setting_menu-actions">
+                    <li class="setting_menu-actions-list" v-for="(item, index) in settingData.menu" :key="index">
+                      <a href="javascript:void(0)" class="setting_menu-actions-link">
+                        <a-tooltip>
+                          <template slot="title">{{ item.label }}</template>
+                          <a-badge :dot="item.hasMsg">
+                            <a-icon :key="item.icon" :type="item.icon" />
+                          </a-badge>
+                        </a-tooltip>
+                      </a>
+                    </li>
+                  </ul>
+                </a-card>
+              </a-dropdown>
             </div>
           </a-layout-header>
           <a-layout>

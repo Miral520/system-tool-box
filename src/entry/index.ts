@@ -44,6 +44,34 @@ export default<any> {
                     to: '#87d068',
                 }
             },
+
+            // 右上角设置
+            settingData: {
+                userName: '测试用户',
+                userDesc: '用户描述',
+                icon: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+                hasMsg: true,
+                menu: [
+                    {
+                        label: '设置',
+                        icon: 'setting',
+                        hasMsg: true,
+                        to: '',
+                    },
+                    {
+                        label: '用户',
+                        icon: 'user',
+                        hasMsg: false,
+                        to: '',
+                    },
+                    {
+                        label: '更多',
+                        icon: 'ellipsis',
+                        hasMsg: false,
+                        to: '',
+                    },
+                ],
+            },
         }
     },
     created() {
