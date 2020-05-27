@@ -15,6 +15,7 @@ function createWindow () {
     frame: false,
     resizable: true,
     hasShadow: true,
+    // icon: '',
     webPreferences: {
       devTools: process.env.NODE_ENV === 'development' ? true : false,
       preload: path.join(__dirname, './public/preload.js'),

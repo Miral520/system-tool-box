@@ -153,9 +153,11 @@
                 <div class="ml_content-card">
                   <vue-scroll>
                     <div class="ml_content-main">
-                      <keep-alive>
-                        <router-view/>
-                      </keep-alive>
+                      <transition name="custom-classes-transition" :duration="{ enter: 600, leave: 50 }" enter-active-class="animate__animated animate__fadeIn" leave-active-class="animate__animated animate__fadeOut">
+                        <keep-alive>
+                          <router-view />
+                        </keep-alive>
+                      </transition>
                     </div>
                   </vue-scroll>
                 </div>
