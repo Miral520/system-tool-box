@@ -3,7 +3,7 @@
     <transition name="custom-classes-transition" :duration="{ enter: 2000, leave: 2000 }" enter-active-class="animate__animated animate__fadeIn" leave-active-class="animate__animated animate__fadeOut">
       <!-- loading -->
       <div class="ml_loading" v-if="loadingWin.show" key="loading">
-        <img class="ml_loading-bg" :src="require('assets/start_main.png')" />
+        <img class="ml_loading-bg" :src="require('assets/img/start_main.png')" />
         <div class="ml_loading-progress">
           <a-progress :percent="loadingWin.percent" :strokeWidth="12" :strokeColor="loadingWin.strokeColor" status="active" />
         </div>
