@@ -20,7 +20,7 @@
         </a-modal>
 
         <!-- 关于 -->
-        <a-modal v-model="about.visible" :closable="false" title="关于" destroyOnClose centered>
+        <a-modal v-model="about.visible" :closable="false" title="关于" width="400px" destroyOnClose centered>
           <div class="about_layout">
             <div class="about_pic">
               <a-icon type="github" />

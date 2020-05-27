@@ -19,7 +19,7 @@ export default<any> {
             // 底部
             footer: {
                 show: true,
-                text: 'Project ©2020 Created by Miral',
+                text: '',
             },
 
             // 退出确认
@@ -93,16 +93,16 @@ export default<any> {
             about: {
                 visible: false,
                 data: {
+                    devName: {
+                        title: '项目',
+                        value: '',
+                    },
                     author: {
                         title: '开发',
                         value: '',
                     },
-                    devDate: {
-                        title: '项目始于',
-                        value: '2020-05',
-                    },
                     version: {
-                        title: '版本号',
+                        title: '版本',
                         value: '',
                     },
                 },
@@ -136,8 +136,9 @@ export default<any> {
         // 关于
         handleAbout() {
             if(!(<any>this).about.visible) {
-                (<any>this).about.data.author.value = (<any>this).sysInfo.author;
-                (<any>this).about.data.version.value = (<any>this).sysInfo.version;
+                (<any>this).about.data.devName.value = (<any>this).sysInfo.about.name;
+                (<any>this).about.data.author.value = (<any>this).sysInfo.about.author;
+                (<any>this).about.data.version.value = (<any>this).sysInfo.about.version;
             }
             (<any>this).about.visible = !(<any>this).about.visible;
         },
@@ -183,6 +184,7 @@ export default<any> {
         getOsType() {
             global.ipcRenderer.on('sys', (event: any, message: any) => {
                 (<any>this).sysInfo = message;
+                (<any>this).footer.text = `${message.about.name} ©${new Date().getFullYear()} Created by ${message.about.author}`;
             });
         },
 

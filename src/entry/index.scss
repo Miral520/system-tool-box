@@ -288,7 +288,7 @@
     }
     .about_pic {
         font-size: 72px;
-        margin-right: 30px;
+        margin-right: 20px;
     }
     .about_text {
         .about_text-list {
@@ -298,8 +298,11 @@
             display: flex;
             align-content: center;
             margin-bottom: 10px;
+            &:last-child {
+                margin-bottom: 0;
+            }
             .title {
-                width: 80px;
+                width: 40px;
             }
             .value {
                 color: #333;
