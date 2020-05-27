@@ -19,13 +19,13 @@ npm run serve
 
 ##### 终端2，再运行
 ```javascript
-// 开发模式
-npm run win_dev // windows
-npm run mac_dev // mac
+// 开发环境, 禁用启动动画
+npm run win_dev // Windows
+npm run mac_dev // Mac
 
-// 或者生产模式，无devTool
-npm run win // windows
-npm run mac // mac
+// 生产环境，无devTool, 禁用刷新
+npm run win // Windows
+npm run mac // Mac
 ```
 <br/>
 
