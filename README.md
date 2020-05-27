@@ -19,9 +19,13 @@ npm run serve
 
 ##### 终端2，再运行
 ```javascript
-npm run win // 开发模式
+// 开发模式
+npm run win_dev // windows
+npm run mac_dev // mac
 
-npm run app // 或者生产模式，无devTool
+// 或者生产模式，无devTool
+npm run win // windows
+npm run mac // mac
 ```
 <br/>
 

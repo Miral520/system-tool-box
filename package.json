@@ -5,8 +5,10 @@
   "author": "Miral",
   "private": true,
   "scripts": {
-    "win": "set NODE_ENV=development&&electron .",
-    "app": "set NODE_ENV=production&&electron .",
+    "win": "set NODE_ENV=production&&electron .",
+    "win_dev": "set NODE_ENV=development&&electron .",
+    "mac": "export NODE_ENV=production&&electron .",
+    "mac_dev": "export NODE_ENV=development&&electron .",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build"
   },
