@@ -10,6 +10,12 @@ export default new Vuex.Store({
 
     // 启动器运行环境
     mode: 'prod',
+
+    // 系统信息
+    sysInfo: {},
+
+    // 显示底部
+    showFooter: true,
   },
   mutations: {
     // 设置面包屑
@@ -20,6 +26,16 @@ export default new Vuex.Store({
     // 启动器运行环境
     setMode(state: any, mode: any) {
       state.mode = mode;
+    },
+
+    // 设置系统信息
+    setSys(state: any, data: any) {
+      state.sysInfo = data;
+    },
+
+    // 设置底部
+    setFooterDisplay(state: any, show: Boolean) {
+      state.showFooter = show;
     },
   },
   actions: {

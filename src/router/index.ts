@@ -10,13 +10,15 @@ const routes: Array<any> = [
     path: '/',
     name: '首页',
     icon: 'home',
+    showFooter: true,
     component: Home
   },
   {
     path: '/files',
     name: '文件系统',
     icon: 'folder',
-    component: () => import('views/Files/index.vue')
+    showFooter: false,
+    component: () => import('views/Files/index.vue'),
   },
 ]
 
@@ -28,6 +30,12 @@ const router = new VueRouter({
 
 router.beforeEach((to: any, from: any, next: any) => {
   store.commit('setLocation', to.name);
+  for (let i = 0; i < routes.length; i++) {
+    if(routes[i].name === to.name) {
+      store.commit('setFooterDisplay', routes[i].showFooter);
+      break;
+    }
+  }
   next();
 })
 

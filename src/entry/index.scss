@@ -186,6 +186,10 @@
                 text-align: center;
                 font-size: 12px;
                 padding: 12px 0;
+                &.hide {
+                    visibility: hidden;
+                    padding: 0;
+                }
             }
     
             .ml_content {
@@ -200,10 +204,10 @@
                     border: 1px solid #e8e8e8;
                     border-radius: 3px;
                     @include full-layout;
-    
                     .ml_content-main {
                         box-sizing: border-box;
                         padding: 0 25px;
+                        @include full-layout;
                     }
                 }
             }

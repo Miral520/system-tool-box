@@ -18,7 +18,6 @@ export default<any> {
 
             // 底部
             footer: {
-                show: true,
                 text: '',
             },
 
@@ -27,9 +26,6 @@ export default<any> {
                 vsisible: false,
                 show: true,
             },
-
-            // 系统信息
-            sysInfo: {},
 
             // 全屏状态
             isFullscreen: false,
@@ -136,9 +132,9 @@ export default<any> {
         // 关于
         handleAbout() {
             if(!(<any>this).about.visible) {
-                (<any>this).about.data.devName.value = (<any>this).sysInfo.about.name;
-                (<any>this).about.data.author.value = (<any>this).sysInfo.about.author;
-                (<any>this).about.data.version.value = (<any>this).sysInfo.about.version;
+                (<any>this).about.data.devName.value = (<any>this).$store.state.sysInfo.about.name;
+                (<any>this).about.data.author.value = (<any>this).$store.state.sysInfo.about.author;
+                (<any>this).about.data.version.value = (<any>this).$store.state.sysInfo.about.version;
             }
             (<any>this).about.visible = !(<any>this).about.visible;
         },
@@ -183,7 +179,7 @@ export default<any> {
         // 获取系统信息
         getOsType() {
             global.ipcRenderer.on('sys', (event: any, message: any) => {
-                (<any>this).sysInfo = message;
+                (<any>this).$store.commit('setSys', message);
                 (<any>this).footer.text = `${message.about.name} ©${new Date().getFullYear()} Created by ${message.about.author}`;
             });
         },

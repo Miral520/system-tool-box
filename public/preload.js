@@ -13,7 +13,11 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 // 传递electron，改变为全局变量，便于内部调用
+// electron
 global.electron = require('electron');
 global.ipcRenderer = global.electron.ipcRenderer;
 global.remote = global.electron.remote;
 global.app = global.remote.app;
+
+// node
+global.fs = require('fs');

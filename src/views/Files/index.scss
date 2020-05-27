@@ -1,0 +1,76 @@
+.files {
+    @include full-layout;
+    display: flex;
+    flex-direction: column;
+    .files_ctrl, .files_layout, .files_footer {
+        width: 100%;
+    }
+    .files_ctrl {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        height: 32px;
+        .files_ctrl-left {
+            flex: 1;
+        }
+        .files_ctrl-right {
+            margin-left: 10px;
+        }
+    }
+    .files_layout {
+        flex: 1;
+        overflow: hidden;
+        .files_tabs {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            @include full-layout;
+            .ant-tabs-content {
+                flex: 1;
+                overflow: hidden;
+                .files_tab {
+                    overflow: hidden;
+                    @include full-layout;
+                }
+            }
+        }
+        .files_tab-warp {
+            width: 100%;
+            overflow: hidden;
+            margin: 0;
+            .files_main {
+                // width: 100%;
+                margin: 0;
+                margin-right: -10px;
+                display: inline-block;
+                text-align: center;
+                .files_list {
+                    width: 100px;
+                    height: 135px;
+                    border-radius: 3px;
+                    display: inline-block;
+                    vertical-align: top;
+                    box-sizing: border-box;
+                    margin-right: 10px;
+                    margin-bottom: 10px;
+                    overflow: hidden;
+                    .files_link {
+                        background: #eee;
+                        display: block;
+                        @include full-layout;
+                    }
+                }
+            }
+        }
+    }
+    .files_footer {
+        text-align: center;
+        font-size: 12px;
+        color: #999;
+        height: 14px;
+        line-height: 14px;
+        margin: 10px 0 0;
+        @include text-omitte;
+    }
+}

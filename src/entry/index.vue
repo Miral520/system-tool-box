@@ -151,18 +151,16 @@
               </a-layout-header>
               <a-layout-content class="ml_content">
                 <div class="ml_content-card">
-                  <vue-scroll>
-                    <div class="ml_content-main">
-                      <transition name="custom-classes-transition" :duration="{ enter: 600, leave: 50 }" enter-active-class="animate__animated animate__fadeIn" leave-active-class="animate__animated animate__fadeOut">
-                        <keep-alive>
-                          <router-view />
-                        </keep-alive>
-                      </transition>
-                    </div>
-                  </vue-scroll>
+                  <div class="ml_content-main">
+                    <transition name="custom-classes-transition" :duration="{ enter: 600, leave: 50 }" enter-active-class="animate__animated animate__fadeIn" leave-active-class="animate__animated animate__fadeOut">
+                      <keep-alive>
+                        <router-view />
+                      </keep-alive>
+                    </transition>
+                  </div>
                 </div>
               </a-layout-content>
-              <a-layout-footer class="ml_footer" v-show="footer.show">{{ footer.text }}</a-layout-footer>
+              <a-layout-footer class="ml_footer" :class="$store.state.showFooter ? '' : 'hide'">{{ footer.text }}</a-layout-footer>
             </a-layout>
           </a-layout>
         </a-layout>
