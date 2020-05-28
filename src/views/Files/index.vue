@@ -15,10 +15,10 @@
             <a-button icon="rollback" />
           </a-tooltip>
           <a-tooltip title="缩略图">
-            <a-button icon="appstore" v-show="isThumb" @click="handleThumb" />
+            <a-button icon="appstore" v-show="!isThumb" @click="handleThumb" />
           </a-tooltip>
           <a-tooltip title="列表">
-            <a-button icon="unordered-list" v-show="!isThumb" @click="handleThumb" />
+            <a-button icon="unordered-list" v-show="isThumb" @click="handleThumb" />
           </a-tooltip>
         </a-button-group>
       </div>
@@ -26,21 +26,34 @@
     <div class="files_layout">
       <a-tabs class="files_tabs" type="editable-card" v-model="activeURL" size="small" hideAdd>
         <a-tab-pane class="files_tab" v-for="item in tabs" :key="item.url" :tab="item.label" :closable="item.closable">
-          <vue-scroll>
-            <div class="files_tab-warp">
-              <ul class="files_main">
-                <li class="files_list" v-for="(file, fileIndex) in item.data" :key="fileIndex">
-                    <a href="javascript:void(0)" class="files_link">
-
+          <div class="files_tab_main">
+            <vue-scroll>
+              <a-list :item-layout="isThumb ? 'horizontal' : 'vertical'" :grid="isThumb ? grid.thumb : grid.list" :data-source="item.data.lists">
+                <a-list-item slot="renderItem" slot-scope="file, i">
+                  <!-- 缩略图 -->
+                  <a-card class="files_list" v-if="isThumb" :bordered="false" :bodyStyle="{padding: 0}" hoverable>
+                    <a href="javascript:void(0)" class="files_link" :fid="i">
+                      <a-icon :type="file.type" theme="twoTone" class="files_icon" />
+                      <p class="files_name" :title="file.name">{{ file.name }}</p>
+                      <p class="files_desc">{{ file.desc }}</p>
                     </a>
-                </li>
-              </ul>
-            </div>
-          </vue-scroll>
+                  </a-card>
+
+                  <!-- 列表 -->
+                  <div class="files_col" v-else>
+                    <a-list-item-meta :description="file.desc">
+                      <a slot="title" href="javascript:void(0)" :fid="i" :title="file.name">{{ file.name }}</a>
+                      <a-avatar slot="avatar" size="large" :icon="file.type"  style="color: #1890ff; backgroundColor: #e6f7ff" />
+                    </a-list-item-meta>
+                  </div>
+                </a-list-item>
+              </a-list>
+            </vue-scroll>
+          </div>
+          <p class="files_tab_footer">共{{ item.data.desc.total }}个文件, 文件夹{{ item.data.desc.folders }}个 , 文件{{ item.data.desc.files }}个</p>
         </a-tab-pane>
       </a-tabs>
     </div>
-    <p class="files_footer">共{{ activeStatus.total }}个文件, 文件夹{{ activeStatus.folders }}个 , 文件{{ activeStatus.files }}个</p>
   </div>
 </template>
 

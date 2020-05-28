@@ -65,65 +65,16 @@
                   </a>
                 </a-badge>
                 <a-card class="setting_menu-layout" slot="overlay">
-                  <!-- 已登录 -->
-                  <div class="login" v-if="settingData.userName">
-                    <div class="setting_menu-main">
-                      <a-card-meta :title="settingData.userName" :description="settingData.userDesc">
-                        <a-avatar
-                          slot="avatar"
-                          :size="48"
-                          :src="settingData.icon"
-                        >
-                          <span v-if="settingData.userName && !settingData.icon">{{ settingData.userName.substring(0, 1) }}</span>
-                          <a-icon slot="icon" type="user" v-if="!settingData.userName && !settingData.icon" />
-                        </a-avatar>
-                      </a-card-meta>
-                    </div>
-                    <ul class="setting_menu-actions">
-                      <li class="setting_menu-actions-list" v-for="(item, index) in settingData.publicMenu" :key="`public_${index}`">
-                        <a href="javascript:void(0)" class="setting_menu-actions-link" @click="runFn(item.fn)">
-                          <a-tooltip>
-                            <template slot="title">{{ item.label }}</template>
-                            <a-badge :dot="item.hasMsg">
-                              <a-icon :key="item.icon" :type="item.icon" />
-                            </a-badge>
-                          </a-tooltip>
-                        </a>
-                      </li>
-                      <li class="setting_menu-actions-list" v-for="(item, index) in settingData.loginMenu" :key="`login_${index}`">
-                        <a href="javascript:void(0)" class="setting_menu-actions-link" @click="runFn(item.fn)">
-                          <a-tooltip>
-                            <template slot="title">{{ item.label }}</template>
-                            <a-badge :dot="item.hasMsg">
-                              <a-icon :key="item.icon" :type="item.icon" />
-                            </a-badge>
-                          </a-tooltip>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <!-- 未登录 -->
-                  <div class="logout" v-else>
-                    <a-menu>
-                      <a-menu-item v-for="(item, index) in settingData.publicMenu" :key="`public_${index}`">
-                        <a href="javascript:void(0)" @click="runFn(item.fn)">
-                          <a-badge :dot="item.hasMsg">
-                            <a-icon :type="item.icon" />
-                            <span>{{ item.label }}</span>
-                          </a-badge>
-                        </a>
-                      </a-menu-item>
-                      <a-menu-item v-for="(item, index) in settingData.logoutMenu" :key="`logout_${index}`">
-                        <a href="javascript:void(0)" @click="runFn(item.fn)">
-                          <a-badge :dot="item.hasMsg">
-                            <a-icon :type="item.icon" />
-                            <span>{{ item.label }}</span>
-                          </a-badge>
-                        </a>
-                      </a-menu-item>
-                    </a-menu>
-                  </div>
+                  <a-menu>
+                    <a-menu-item v-for="(item, index) in settingData.menu" :key="`public_${index}`">
+                      <a href="javascript:void(0)" @click="runFn(item.fn)">
+                        <a-badge :dot="item.hasMsg">
+                          <a-icon :type="item.icon" />
+                          <span>{{ item.label }}</span>
+                        </a-badge>
+                      </a>
+                    </a-menu-item>
+                  </a-menu>
                 </a-card>
               </a-dropdown>
             </div>
