@@ -38,14 +38,16 @@ export default {
         // 初始化
         init() {
             (<any>this).addDefault();
+
+            // console.log((<any>this).loadFiles('/Users/miral/前端'));
         },
 
         // 添加默认目录
         addDefault() {
-            let userInfo = (<any>this).$store.state.sysInfo.userInfo;
-            (<any>this).addTab(userInfo.username, userInfo.homedir, (<any>this).loadFiles(userInfo.homedir), false);
-            (<any>this).activeURL = userInfo.homedir;
-            (<any>this).inputURL = userInfo.homedir;
+            // let userInfo = (<any>this).$store.state.sysInfo.userInfo;
+            // (<any>this).addTab(userInfo.username, userInfo.homedir, (<any>this).loadFiles(userInfo.homedir), false);
+            // (<any>this).activeURL = userInfo.homedir;
+            // (<any>this).inputURL = userInfo.homedir;
 
             global.child_process.exec('wmic logicaldisk get caption', (err: any, stdout: any, stderr: any) => {
                 if(err || stderr) {
@@ -103,18 +105,20 @@ export default {
 
         // 向上
         rollback() {
-            let urlArr = (<any>this).activeURL.split('\\');
+            let urlArr = (<any>this).activeURL.split(global.path.sep);
             if(urlArr.length > 1) {
                 urlArr.pop();
                 let label = urlArr[urlArr.length - 1];
-                let target = urlArr.join('\\');
+                let target = urlArr.join(global.path.sep);
                 let data = (<any>this).loadFiles(target);
-                let code = (<any>this).getTabCode((<any>this).inputURL);
-                (<any>this).tabs[code].label = label;
-                (<any>this).tabs[code].url = target;
-                (<any>this).tabs[code].data = data;
-                (<any>this).activeURL = target;
-                (<any>this).inputURL = target;
+                if(data) {
+                    let code = (<any>this).getTabCode((<any>this).inputURL);
+                    (<any>this).tabs[code].label = label;
+                    (<any>this).tabs[code].url = target;
+                    (<any>this).tabs[code].data = data;
+                    (<any>this).activeURL = target;
+                    (<any>this).inputURL = target;
+                }
             }
             else {
                 (<any>this).$message.warning('不能向上咯');
@@ -126,7 +130,7 @@ export default {
             let data = (<any>this).loadFiles((<any>this).inputURL);
             if(data) {
                 let code = (<any>this).getTabCode((<any>this).activeURL);
-                let urlArr = (<any>this).inputURL.split('\\');
+                let urlArr = (<any>this).inputURL.split(global.path.sep);
                 let label = urlArr[urlArr.length - 1];
                 if(code) {
                     (<any>this).tabs[code].label = label;
@@ -146,7 +150,7 @@ export default {
                 (<any>this).$message.warning('无访问权限');
             }
             else {
-                let target = `${(<any>this).activeURL}\\${file.name}`;
+                let target = `${(<any>this).activeURL}${global.path.sep}${file.name}`;
                 if(file.type === 'folder') {
                     let code = (<any>this).getTabCode((<any>this).activeURL);
                     if(code) {
@@ -198,13 +202,13 @@ export default {
                     let type = '';
                     let desc = '';
                     if(isFile) {
-                        let data = (<any>this).getDesc(`${url}\\${item.name}`, 'file');
+                        let data = (<any>this).getDesc(`${url}${global.path.sep}${item.name}`, 'file');
                         type = 'file';
                         desc = data.info;
                         files.desc.files++;
                     }
                     else {
-                        let data = (<any>this).getDesc(`${url}\\${item.name}`, 'folder');
+                        let data = (<any>this).getDesc(`${url}${global.path.sep}${item.name}`, 'folder');
                         type = 'folder';
                         desc = data.info;
                         files.desc.folders++;
