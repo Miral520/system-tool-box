@@ -21,3 +21,4 @@ global.app = global.remote.app;
 
 // node
 global.fs = require('fs');
+global.child_process = require('child_process');
