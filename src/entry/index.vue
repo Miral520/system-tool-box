@@ -12,7 +12,7 @@
       <!-- 主内容 -->
       <div class="ml_frame" :class="isFullscreen ? '' : 'hasShadow'" key="main" v-else>
         <!-- 关闭提示 -->
-        <a-modal v-model="float.vsisible" :closable="false" title="确认关闭" okText="确定" cancelText="取消" @ok="closeHandle" @cancel="cancelHandle" centered>
+        <a-modal v-model="float.vsisible" :closable="false" :mask="false" title="确认关闭" okText="确定" cancelText="取消" @ok="closeHandle" @cancel="cancelHandle" centered>
           <p class="ml_float-text">是否要关闭应用程序？</p>
           <div class="ml_float-checkbox">
             <a-checkbox :checked="!float.show" @change="nextBoxHandle">不再显示</a-checkbox>
@@ -20,7 +20,7 @@
         </a-modal>
 
         <!-- 关于 -->
-        <a-modal v-model="about.visible" :closable="false" title="关于" width="400px" destroyOnClose centered>
+        <a-modal v-model="about.visible" :closable="false" title="关于" width="400px" :mask="false" destroyOnClose centered>
           <div class="about_layout">
             <div class="about_pic">
               <a-icon type="github" />
