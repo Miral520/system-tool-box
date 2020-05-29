@@ -33,7 +33,7 @@ export default<any> {
                 visible: false,
                 config: {
                     floatHide: {
-                        title: '退出前隐藏提示',
+                        title: '隐藏退出确认',
                         type: 'switch',
                         value: eStore.get('floatHide'),
                     },
@@ -146,7 +146,6 @@ export default<any> {
         // 关闭提示
         closeFloatHandle() {
             (<any>this).float.show = !eStore.get('floatHide');
-            console.log((<any>this).float.show);
             if((<any>this).float.show) {
                 // (this as any).float.visible = true;
                 (<any>this).float.visible = true;

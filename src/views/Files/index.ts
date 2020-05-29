@@ -12,20 +12,20 @@ export default {
 
             isThumb: true, // 缩略图模式
 
-            showHide: false, // 显示隐藏文件
+            hidden: true, // 显示隐藏文件
 
             grid: { // 布局
                 thumb: {
-                    gutter: 16,
-                    xs: 1,
-                    sm: 2,
-                    md: 4,
-                    lg: 4,
-                    xl: 6,
-                    xxl: 3,
+                    gutter: 0,
+                    xs: 2,
+                    sm: 4,
+                    md: 6,
+                    lg: 8,
+                    xl: 12,
+                    xxl: 24,
                 },
                 list: {
-                    gutter: 16,
+                    gutter: 0,
                     column: 1,
                 },
             },
@@ -39,18 +39,32 @@ export default {
     methods: {
         // 初始化
         init() {
+            (<any>this).tabs = [];
             (<any>this).addDefault();
         },
 
         // 添加默认目录
         addDefault() {
-            // 读取分区
+            // 读取本地分区
+            (<any>this).getLocalDisk(() => {
+                // 出错时获取用户目录
+                let userInfo = (<any>this).$store.state.sysInfo.userInfo;
+                (<any>this).addTab(userInfo.username, userInfo.homedir, (<any>this).loadFiles(userInfo.homedir), false);
+                (<any>this).activeURL = userInfo.homedir;
+                (<any>this).inputURL = userInfo.homedir;
+            });
+
+            // 读取磁盘信息
+            // (<any>this).getDisk();
+        },
+
+        // 读取本地分区
+        getLocalDisk(error: Function) {
             global.child_process.exec('wmic logicaldisk get caption', (err: any, stdout: any, stderr: any) => {
                 if(err || stderr) {
-                    let userInfo = (<any>this).$store.state.sysInfo.userInfo;
-                    (<any>this).addTab(userInfo.username, userInfo.homedir, (<any>this).loadFiles(userInfo.homedir), false);
-                    (<any>this).activeURL = userInfo.homedir;
-                    (<any>this).inputURL = userInfo.homedir;
+                    if(error) {
+                        error();
+                    }
                 }
                 else {
                     let disk = stdout.split('\n');
@@ -81,6 +95,18 @@ export default {
             });
         },
 
+        // 读取磁盘信息
+        getDisk() {
+            global.child_process.exec('wmic diskdrive get model', (err: any, stdout: any, stderr: any) => {
+                if(err || stderr) {
+                    
+                }
+                else {
+                    console.log(stdout);
+                }
+            });
+        },
+
         // 添加tab
         addTab(label: String, url: String, data: any, closable: Boolean = true) {
             (<any>this).tabs.push({
@@ -98,7 +124,7 @@ export default {
 
         // 切换隐藏文件
         handleHide() {
-            (<any>this).showHide = !(<any>this).showHide;
+            (<any>this).hidden = !(<any>this).hidden;
         },
 
         // 刷新
