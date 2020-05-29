@@ -14,11 +14,11 @@
           <a-tooltip title="向上">
             <a-button icon="rollback" @click="rollback" />
           </a-tooltip>
-          <a-tooltip title="缩略图">
-            <a-button icon="appstore" v-show="!isThumb" @click="handleThumb" />
+          <a-tooltip title="隐藏文件">
+            <a-button :icon="showHide ? 'border-inner' : 'border-outer'" @click="handleHide" />
           </a-tooltip>
-          <a-tooltip title="列表">
-            <a-button icon="unordered-list" v-show="isThumb" @click="handleThumb" />
+          <a-tooltip :title="isThumb ? '列表' : '缩略图'">
+            <a-button :icon="isThumb ? 'unordered-list' : 'appstore'" @click="handleThumb" />
           </a-tooltip>
         </a-button-group>
       </div>
@@ -29,8 +29,7 @@
           <div class="files_tab_main">
             <vue-scroll v-if="item.data.lists.length">
               <a-list :item-layout="isThumb ? 'horizontal' : 'vertical'" :grid="isThumb ? grid.thumb : grid.list" :data-source="item.data.lists">
-                <a-list-item slot="renderItem" slot-scope="file, i">
-                  <!-- 缩略图 -->
+                <a-list-item slot="renderItem" slot-scope="file, i" v-show="!(file.hide && showHide)">
                   <a-card class="files_list" v-if="isThumb" :bordered="false" :bodyStyle="{padding: 0}" hoverable>
                     <a href="javascript:void(0)" class="files_link" :fid="i" @dblclick="openFile(file)">
                       <a-icon :type="file.type" theme="twoTone" class="files_icon" />
@@ -39,7 +38,7 @@
                     </a>
                   </a-card>
 
-                  <!-- 列表 -->
+                  
                   <div class="files_col" v-else>
                     <a-list-item-meta :description="file.desc" @dblclick="openFile(file)">
                       <a slot="title" href="javascript:void(0)" :fid="i" :title="file.name">{{ file.name }}</a>
@@ -51,7 +50,7 @@
             </vue-scroll>
             <a-empty description="没有文件" v-else />
           </div>
-          <p class="files_tab_footer">共{{ item.data.desc.total }}个文件, 文件夹{{ item.data.desc.folders }}个 , 文件{{ item.data.desc.files }}个</p>
+          <p class="files_tab_footer">共{{ item.data.desc.total }}个文件, 文件夹{{ item.data.desc.folders }}个 , 文件{{ item.data.desc.files }}个, 包含隐藏文件夹{{ item.data.desc.hideFolders }}个, 隐藏文件{{ item.data.desc.hideFiles }}个</p>
         </a-tab-pane>
       </a-tabs>
     </div>

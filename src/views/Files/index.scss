@@ -33,7 +33,9 @@
                     overflow: hidden;
                     display: flex;
                     flex-direction: column;
-                    @include full-layout;
+                    &.ant-tabs-tabpane-active {
+                        @include full-layout;
+                    }
                     .files_tab_main {
                         overflow: hidden;
                         flex: 1;

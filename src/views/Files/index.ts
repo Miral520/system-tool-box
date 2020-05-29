@@ -12,6 +12,8 @@ export default {
 
             isThumb: true, // 缩略图模式
 
+            showHide: false, // 显示隐藏文件
+
             grid: { // 布局
                 thumb: {
                     gutter: 16,
@@ -38,17 +40,11 @@ export default {
         // 初始化
         init() {
             (<any>this).addDefault();
-
-            // console.log((<any>this).loadFiles('/Users/miral/前端'));
         },
 
         // 添加默认目录
         addDefault() {
-            // let userInfo = (<any>this).$store.state.sysInfo.userInfo;
-            // (<any>this).addTab(userInfo.username, userInfo.homedir, (<any>this).loadFiles(userInfo.homedir), false);
-            // (<any>this).activeURL = userInfo.homedir;
-            // (<any>this).inputURL = userInfo.homedir;
-
+            // 读取分区
             global.child_process.exec('wmic logicaldisk get caption', (err: any, stdout: any, stderr: any) => {
                 if(err || stderr) {
                     let userInfo = (<any>this).$store.state.sysInfo.userInfo;
@@ -72,13 +68,15 @@ export default {
                         }
                         
                         if(newArr.length) {
-                            let name = newArr.join('');
-                            let data = (<any>this).loadFiles(name);
+                            let name = newArr.join('') + global.path.sep;
+                            let data = (<any>this).loadFiles(name, false);
                             if(data) {
                                 (<any>this).addTab(name, name, data, false);
                             }
                         }
                     });
+                    (<any>this).activeURL = (<any>this).tabs[0].url;
+                    (<any>this).inputURL = (<any>this).tabs[0].url;
                 }
             });
         },
@@ -98,6 +96,11 @@ export default {
             (<any>this).isThumb = !(<any>this).isThumb;
         },
 
+        // 切换隐藏文件
+        handleHide() {
+            (<any>this).showHide = !(<any>this).showHide;
+        },
+
         // 刷新
         refresh() {
             (<any>this).tabs[parseInt((<any>this).getTabCode((<any>this).activeURL))].data = (<any>this).loadFiles((<any>this).activeURL);
@@ -106,10 +109,14 @@ export default {
         // 向上
         rollback() {
             let urlArr = (<any>this).activeURL.split(global.path.sep);
-            if(urlArr.length > 1) {
+            if(urlArr.length > 1 && urlArr[urlArr.length - 1] !== '') {
                 urlArr.pop();
                 let label = urlArr[urlArr.length - 1];
                 let target = urlArr.join(global.path.sep);
+                if(target[target.length - 1] === ':') {
+                    target += global.path.sep;
+                    label += global.path.sep;
+                }
                 let data = (<any>this).loadFiles(target);
                 if(data) {
                     let code = (<any>this).getTabCode((<any>this).inputURL);
@@ -132,6 +139,10 @@ export default {
                 let code = (<any>this).getTabCode((<any>this).activeURL);
                 let urlArr = (<any>this).inputURL.split(global.path.sep);
                 let label = urlArr[urlArr.length - 1];
+                if((<any>this).inputURL[(<any>this).inputURL.length - 1] === ':') {
+                    (<any>this).inputURL += global.path.sep;
+                    label += global.path.sep;
+                }
                 if(code) {
                     (<any>this).tabs[code].label = label;
                     (<any>this).tabs[code].url = (<any>this).inputURL;
@@ -150,7 +161,13 @@ export default {
                 (<any>this).$message.warning('无访问权限');
             }
             else {
-                let target = `${(<any>this).activeURL}${global.path.sep}${file.name}`;
+                let target = '';
+                if((<any>this).activeURL[(<any>this).activeURL.length - 1] === global.path.sep) {
+                    target = `${(<any>this).activeURL}${file.name}`;
+                }
+                else {
+                    target = `${(<any>this).activeURL}${global.path.sep}${file.name}`;
+                }
                 if(file.type === 'folder') {
                     let code = (<any>this).getTabCode((<any>this).activeURL);
                     if(code) {
@@ -183,7 +200,7 @@ export default {
         },
 
         // 读取指定目录下文件
-        loadFiles(url: String) {
+        loadFiles(url: String, showMsg: Boolean = true) {
             try {
                 let allFiles = global.fs.readdirSync(url, {
                     withFileTypes: true,
@@ -192,7 +209,9 @@ export default {
                     lists: [],
                     desc: {
                         folders: 0,
+                        hideFolders: 0,
                         files: 0,
+                        hideFiles: 0,
                         total: 0,
                     },
                 };
@@ -201,29 +220,39 @@ export default {
                     let isFile = item.isFile();
                     let type = '';
                     let desc = '';
+                    let hide = (item.name[0] === '.' || item.name[0] === '$');
                     if(isFile) {
                         let data = (<any>this).getDesc(`${url}${global.path.sep}${item.name}`, 'file');
                         type = 'file';
                         desc = data.info;
                         files.desc.files++;
+                        if(hide) {
+                            files.desc.hideFiles++;
+                        }
                     }
                     else {
                         let data = (<any>this).getDesc(`${url}${global.path.sep}${item.name}`, 'folder');
                         type = 'folder';
                         desc = data.info;
                         files.desc.folders++;
+                        if(hide) {
+                            files.desc.hideFolders++;
+                        }
                     }
                     files.lists.push({
                         name: item.name,
                         type: type,
                         isImage: false,
                         desc: desc,
+                        hide: hide,
                     });
                 });
                 return files;
             }
             catch (error) {
-                (<any>this).$message.error('目录不存在');
+                if(showMsg) {
+                    (<any>this).$message.error('目录不存在');
+                }
                 return false;
             }
         },
