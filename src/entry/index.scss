@@ -258,3 +258,26 @@
     width: 100%;
     text-align: center;
 }
+
+.setting_layout {
+    .setting_warp {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        .setting_list {
+            width: 50%;
+            display: flex;
+            align-content: center;
+            margin-top: 20px;
+            .setting_title {
+                color: #999;
+                margin-right: 10px;
+                font-size: 14px;
+            }
+        }
+    }
+}
+.setting_btn {
+    width: 100%;
+    text-align: center;
+}

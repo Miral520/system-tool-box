@@ -18,3 +18,7 @@ if(process.env.NODE_ENV === 'production') {
         }
     }
 }
+
+const Store = require('electron-store');
+
+const eStore = new Store();

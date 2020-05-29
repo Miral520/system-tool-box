@@ -30,6 +30,7 @@
             <vue-scroll v-if="item.data.lists.length">
               <a-list :item-layout="isThumb ? 'horizontal' : 'vertical'" :grid="isThumb ? grid.thumb : grid.list" :data-source="item.data.lists">
                 <a-list-item slot="renderItem" slot-scope="file, i" v-show="!(file.hide && showHide)">
+                  <!-- 缩略图 -->
                   <a-card class="files_list" v-if="isThumb" :bordered="false" :bodyStyle="{padding: 0}" hoverable>
                     <a href="javascript:void(0)" class="files_link" :fid="i" @dblclick="openFile(file)">
                       <a-icon :type="file.type" theme="twoTone" class="files_icon" />
@@ -38,7 +39,7 @@
                     </a>
                   </a-card>
 
-                  
+                  <!-- 列表 -->
                   <div class="files_col" v-else>
                     <a-list-item-meta :description="file.desc" @dblclick="openFile(file)">
                       <a slot="title" href="javascript:void(0)" :fid="i" :title="file.name">{{ file.name }}</a>

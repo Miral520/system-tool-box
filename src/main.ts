@@ -4,8 +4,8 @@ import router from 'router'
 import store from 'store'
 import utils from 'utils/utils'
 import Antd from 'ant-design-vue';
-import 'ant-design-vue/dist/antd.css';
 import vuescroll from 'vuescroll';
+import 'ant-design-vue/dist/antd.css';
 import 'animate.css'
 
 Vue.use(Antd);

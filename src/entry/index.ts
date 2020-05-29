@@ -1,4 +1,5 @@
 declare var global: any;
+declare var eStore: any;
 
 export default<any> {
     name: 'index',
@@ -23,8 +24,20 @@ export default<any> {
 
             // 退出确认
             float: {
-                vsisible: false,
-                show: true,
+                visible: false,
+                show: !eStore.get('floatHide'),
+            },
+
+            // 设置
+            setting: {
+                visible: false,
+                config: {
+                    floatHide: {
+                        title: '退出前隐藏提示',
+                        type: 'switch',
+                        value: eStore.get('floatHide'),
+                    },
+                },
             },
 
             // 全屏状态
@@ -49,7 +62,7 @@ export default<any> {
                         label: '设置',
                         icon: 'setting',
                         hasMsg: true,
-                        fn: '',
+                        fn: 'handleSetting',
                     },
                     {
                         label: '关于',
@@ -114,11 +127,29 @@ export default<any> {
             (<any>this).about.visible = !(<any>this).about.visible;
         },
 
+        // 设置
+        handleSetting() {
+            for (const key in (<any>this).setting.config) {
+                (<any>this).setting.config[key].value = eStore.get(key);
+            }
+            (<any>this).setting.visible = !(<any>this).setting.visible;
+        },
+
+        // 设置确定
+        confirmSetting() {
+            for (const key in (<any>this).setting.config) {
+                eStore.set(key, (<any>this).setting.config[key].value);
+            }
+            (<any>this).setting.visible = false;
+        },
+
         // 关闭提示
         closeFloatHandle() {
+            (<any>this).float.show = !eStore.get('floatHide');
+            console.log((<any>this).float.show);
             if((<any>this).float.show) {
-                // (this as any).float.vsisible = true;
-                (<any>this).float.vsisible = true;
+                // (this as any).float.visible = true;
+                (<any>this).float.visible = true;
             }
             else {
                 this.closeHandle();
@@ -127,6 +158,7 @@ export default<any> {
 
         // 关闭程序
         closeHandle() {
+            eStore.set('floatHide', !(<any>this).float.show);
             global.app.exit();
         },
 
@@ -183,4 +215,17 @@ export default<any> {
             }
         },
     },
+    // computed: {
+    //     floatHide() {
+    //         return (<any>this).float.show;
+    //     },
+    // },
+    // watch: {
+    //     floatHide: {
+    //         // immediate: true,
+    //         handler(val: Boolean) {
+    //             eStore.set('floatHide', val);
+    //         }
+    //     },
+    // },
 }

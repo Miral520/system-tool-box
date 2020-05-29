@@ -12,7 +12,7 @@
       <!-- 主内容 -->
       <div class="ml_frame" :class="isFullscreen ? '' : 'hasShadow'" key="main" v-else>
         <!-- 关闭提示 -->
-        <a-modal v-model="float.vsisible" :closable="false" :mask="false" title="确认关闭" okText="确定" cancelText="取消" @ok="closeHandle" @cancel="cancelHandle" centered>
+        <a-modal v-model="float.visible" :closable="false" :mask="false" title="确认关闭" okText="确定" cancelText="取消" @ok="closeHandle" @cancel="cancelHandle" centered>
           <p class="ml_float-text">是否要关闭应用程序？</p>
           <div class="ml_float-checkbox">
             <a-checkbox :checked="!float.show" @change="nextBoxHandle">不再显示</a-checkbox>
@@ -34,6 +34,18 @@
           </div>
           <div class="about_btn" slot="footer">
             <a-button type="primary" shape="round" @click="handleAbout">知道了</a-button>
+          </div>
+        </a-modal>
+
+        <!-- 设置 -->
+        <a-modal v-model="setting.visible" :closable="false" title="设置" width="500px" :mask="false" okText="确定" cancelText="取消" @ok="confirmSetting" destroyOnClose centered>
+          <div class="setting_layout">
+            <ul class="setting_warp">
+              <li class="setting_list" v-for="(item, key) in setting.config" :key="key">
+                <span class="setting_title">{{ item.title }}</span>
+                <a-switch v-if="item.type === 'switch'" v-model="item.value" />
+              </li>
+            </ul>
           </div>
         </a-modal>
 
