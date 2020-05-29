@@ -24,7 +24,7 @@ export default {
                     md: 6,
                     lg: 8,
                     xl: 12,
-                    xxl: 24,
+                    xxl: 12,
                 },
                 list: {
                     gutter: 0,
