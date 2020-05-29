@@ -23,8 +23,8 @@ export default {
                     sm: 4,
                     md: 6,
                     lg: 8,
-                    xl: 12,
-                    xxl: 12,
+                    xl: 8,
+                    xxl: 8,
                 },
                 list: {
                     gutter: 0,
@@ -33,6 +33,12 @@ export default {
             },
 
             units: ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB', 'BB'], // 单位
+
+            picExt: ['jpg', 'jpeg', 'png', 'gif'], // 图片扩展名
+
+            videoExt: ['mp4'], // 视频扩展名
+
+            audioExt: ['mp3'], // 音频扩展名
         }
     },
     created() {
@@ -217,6 +223,44 @@ export default {
             }
         },
 
+        // 返回文件扩展名
+        getExtension(text: String) {
+            let arr = text.split(global.path.sep);
+            let filename = text;
+            if(arr.length > 1) {
+                // URL
+                filename = arr[arr.length - 1];
+            }
+            let nameArr = filename.split('.');
+            if(nameArr[0] === '') {
+                nameArr.shift();
+            }
+            if (nameArr.length > 1) {
+                return nameArr[nameArr.length - 1];
+            }
+            else {
+                return false;
+            }
+        },
+
+        // 判断为媒体文件
+        isMedia(ext: any) {
+            if(!ext) {
+                return false;
+            }
+            let extName = ext.toLowerCase();
+            if((<any>this).picExt.indexOf(extName) > -1) {
+                return 'pic';
+            }
+            if((<any>this).videoExt.indexOf(extName) > -1) {
+                return 'video';
+            }
+            if((<any>this).audioExt.indexOf(extName) > -1) {
+                return 'audio';
+            }
+            return false;
+        },
+
         // 查找tab
         getTabCode(url: any) {
             for (let i = 0; i < (<any>this).tabs.length; i++) {
@@ -249,6 +293,7 @@ export default {
                     let type = '';
                     let desc = '';
                     let hide = (item.name[0] === '.' || item.name[0] === '$');
+                    let isMedia = false;
                     if(isFile) {
                         let data = (<any>this).getDesc(`${url}${global.path.sep}${item.name}`, 'file');
                         type = 'file';
@@ -257,6 +302,7 @@ export default {
                         if(hide) {
                             files.desc.hideFiles++;
                         }
+                        isMedia = (<any>this).isMedia((<any>this).getExtension(item.name));
                     }
                     else {
                         let data = (<any>this).getDesc(`${url}${global.path.sep}${item.name}`, 'folder');
@@ -270,7 +316,7 @@ export default {
                     files.lists.push({
                         name: item.name,
                         type: type,
-                        isImage: false,
+                        isMedia: isMedia,
                         desc: desc,
                         hide: hide,
                     });
