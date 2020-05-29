@@ -10,13 +10,15 @@ export default {
 
             tabs: [], // 标签数据
 
+            loading: true, // 加载中
+
             isThumb: true, // 缩略图模式
 
             hidden: true, // 显示隐藏文件
 
             grid: { // 布局
                 thumb: {
-                    gutter: 0,
+                    gutter: 5,
                     xs: 2,
                     sm: 4,
                     md: 6,

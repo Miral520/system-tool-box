@@ -101,6 +101,8 @@ export default<any> {
         this.$nextTick(() => {
             this.loadApp(this.launchApp);
         });
+
+        this.calcRunTime();
     },
     methods: {
         // 初始化
@@ -211,6 +213,17 @@ export default<any> {
                     }
                     (<any>this).loadingWin.percent += Math.round(100 / parseInt((<any>this).loadingWin.sec) / 20);
                 }, 50);
+            }
+        },
+
+        // 程序访问次数
+        calcRunTime() {
+            if(eStore.has('runTime')) {
+                let time = eStore.get('runTime');
+                eStore.set('runTime', time + 1);
+            }
+            else {
+                eStore.set('runTime', 1);
             }
         },
     },

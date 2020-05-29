@@ -13,6 +13,7 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@antv/g2plot": "^1.1.5",
     "animate.css": "^4.1.0",
     "ant-design-vue": "^1.6.0",
     "core-js": "^3.6.4",
