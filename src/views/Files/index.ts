@@ -319,6 +319,7 @@ export default {
                         isMedia: isMedia,
                         desc: desc,
                         hide: hide,
+                        url: `${url}${global.path.sep}${item.name}`,
                     });
                 });
                 return files;
@@ -329,6 +330,11 @@ export default {
                 }
                 return false;
             }
+        },
+
+        // 读取本地资源
+        loadLocalSrc(url: String) {
+            
         },
 
         // 读取文件或文件夹描述
