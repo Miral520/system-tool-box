@@ -63,6 +63,14 @@
         .files_list {
             overflow: hidden;
             @include full-layout;
+            &:hover, &:focus-within {
+                box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.09);
+                background: rgba(0, 0, 0, 0.04);
+                .files_link {
+                    border: 1px solid #eee;
+                    border-radius: 5px;
+                }
+            }
             .files_link {
                 display: block;
                 width: 100%;
@@ -71,12 +79,8 @@
                 text-align: center;
                 box-sizing: border-box;
                 padding: 10px 0;
-                &:hover {
-                    border: 1px solid #eee;
-                    border-radius: 5px;
-                }
                 .files_icon {
-                    font-size: 85px;
+                    font-size: 42px;
                     height: 100px;
                     width: 100%;
                     overflow: hidden;
@@ -86,6 +90,8 @@
                     img {
                         max-width: 90%;
                         max-height: 90%;
+                        width: auto;
+                        height: auto;
                     }
                 }
                 .files_name {
@@ -123,6 +129,19 @@
                             a {
                                 color: #1890ff;
                             }
+                        }
+                    }
+                }
+                .ant-list-item-meta-avatar {
+                    .ant-avatar {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        img {
+                            max-width: 60%;
+                            max-height: 60%;
+                            width: auto;
+                            height: auto;
                         }
                     }
                 }

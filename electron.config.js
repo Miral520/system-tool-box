@@ -33,6 +33,33 @@ function createWindow () {
 
   win.loadURL(loadAdd);
 
+  // 监听新建预览窗口
+  ipcMain.on('preview', (e, arg) => {
+    preview = new BrowserWindow({
+      width: 600, 
+      height: 400,
+      frame: true,
+      parent: win,
+      center: true,
+      resizable: true,
+      hasShadow: true,
+      webPreferences: {
+        devTools: process.env.NODE_ENV === 'development' ? true : false,
+        preload: path.join(__dirname, './public/preload.js'),
+        nodeIntegration: true,
+        nodeIntegrationInWorker: true,
+        webSecurity: false,
+      },
+    })
+    preview.loadURL(path.join('file:', __dirname, 'public', 'preview.html'));
+    preview.on('closed',()=>{
+      preview = null;
+    });
+    preview.webContents.openDevTools();
+    
+    preview.webContents.executeJavaScript('localStorage.setItem("prvURL",' + arg.proload + ')');
+  });
+
   // 监听最小化
   ipcMain.on('min', (e, arg) => {
     win.minimize();

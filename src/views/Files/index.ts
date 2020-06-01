@@ -40,7 +40,7 @@ export default {
 
             audioExt: ['mp3'], // 音频扩展名
 
-            testpic: '',
+            loopTimer: null, // tabs监听防抖
         }
     },
     created() {
@@ -295,11 +295,6 @@ export default {
                             files.desc.hideFiles++;
                         }
                         isMedia = (<any>this).isMedia((<any>this).getExtension(item.name));
-                        if(isMedia && desc !== '无访问权限') {
-                            (<any>this).loadLocalSrc(fileURL, (base64: any) => {
-                                proload = base64;
-                            });
-                        }
                     }
                     else {
                         let data = (<any>this).getDesc(fileURL, 'folder');
@@ -320,6 +315,15 @@ export default {
                         url: fileURL,
                     });
                 });
+                files.lists.sort((a: any, b: any) => {
+                    if(a.type === 'folder') {
+                        return -1;
+                    }
+                    else if(a.type === 'file') {
+                        return 1;
+                    }
+                    return 0;
+                });
                 return files;
             }
             catch (error) {
@@ -331,9 +335,46 @@ export default {
         },
 
         // 读取本地资源
-        loadLocalSrc(url: String, callback: Function) {
-            if(callback) {
-                callback(`data:image/png;base64,${global.fs.readFileSync(url).toString('base64')}`);
+        async loadLocalSrc(url: String, type: String) {
+            if(type === 'pic') {
+                try {
+                    return `data:image/png;base64,${global.fs.readFileSync(url).toString('base64')}`;
+                }
+                catch (error) {
+                    return '';
+                }
+            }
+            else {
+                return await global.app.getFileIcon(url, {
+                    size: global.os.type() === 'Darwin' ? 'normal' : 'large',
+                }).then((res: any) => {
+                    let binary = '';
+                    const bytes = new Uint8Array(res.toPNG());
+                    for (let i = 0; i < bytes.byteLength; i += 1) {
+                        binary += String.fromCharCode(bytes[i]);
+                    }
+                    return `data:image/png;base64,${window.btoa(binary)}`;
+                }, (rej: any) => {
+                    return '';
+                });
+            }
+        },
+
+        // 设置预渲染图片
+        setThumb() {
+            let _this = (<any>this);
+            for (let i = 0; i < _this.tabs.length; i++) {
+                for (let index = 0; index < _this.tabs[i].data.lists.length; index++) {
+                    if(_this.tabs[i].data.lists[index].type === 'file') {
+                        (function(tabIndex, itemIndex) {
+                            _this.loadLocalSrc(_this.tabs[tabIndex].data.lists[itemIndex].url, _this.tabs[tabIndex].data.lists[itemIndex].isMedia).then((res: any) => {
+                                _this.tabs[tabIndex].data.lists[itemIndex].proload = res;
+                            }, (rej: any) => {
+                                _this.tabs[tabIndex].data.lists[itemIndex].proload = rej;
+                            })
+                        })(i, index)
+                    }
+                }
             }
         },
 
@@ -379,6 +420,32 @@ export default {
         // 标签变化
         tabChange(activeKey: any) {
             (<any>this).inputURL = activeKey;
+        },
+
+        // 单击聚焦
+        handleClick(data: any) {
+
+        },
+
+        // 右键菜单
+        handleMenu(data: any) {
+
+        },
+
+        // 空格预览
+        handleSpace(data: any) {
+            localStorage.setItem('preview', data.proload);
+            global.ipcRenderer.send('preview', data);
+        },
+    },
+    watch: {
+        tabs: {
+            immediate: true,
+            deep: true,
+            handler(val: any) {
+                clearTimeout((<any>this).loopTimer);
+                (<any>this).loopTimer = setTimeout((<any>this).setThumb, 500);
+            }
         },
     },
 }
