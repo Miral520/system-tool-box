@@ -33,7 +33,9 @@
                   <!-- 缩略图 -->
                   <a-card class="files_list" v-if="isThumb" :bordered="false" :bodyStyle="{padding: 0}" hoverable>
                     <a href="javascript:void(0)" class="files_link" :fid="i" @dblclick="openFile(file)">
-                      <img class="files_icon" :src="file.url" v-if="file.isMedia === 'pic'">
+                      <div class="files_icon" v-if="file.isMedia === 'pic' && file.proload">
+                        <img :src="file.proload" />
+                      </div>
                       <a-icon :type="file.type" theme="twoTone" class="files_icon" v-else />
                       <p class="files_name" :title="file.name">{{ file.name }}</p>
                       <p class="files_desc">{{ file.desc }}</p>

@@ -39,6 +39,8 @@ export default {
             videoExt: ['mp4'], // 视频扩展名
 
             audioExt: ['mp3'], // 音频扩展名
+
+            testpic: '',
         }
     },
     created() {
@@ -61,9 +63,6 @@ export default {
                 (<any>this).activeURL = userInfo.homedir;
                 (<any>this).inputURL = userInfo.homedir;
             });
-
-            // 读取磁盘信息
-            // (<any>this).getDisk();
         },
 
         // 读取本地分区
@@ -99,18 +98,6 @@ export default {
                     });
                     (<any>this).activeURL = (<any>this).tabs[0].url;
                     (<any>this).inputURL = (<any>this).tabs[0].url;
-                }
-            });
-        },
-
-        // 读取磁盘信息
-        getDisk() {
-            global.child_process.exec('wmic diskdrive get model', (err: any, stdout: any, stderr: any) => {
-                if(err || stderr) {
-                    
-                }
-                else {
-                    console.log(stdout);
                 }
             });
         },
@@ -292,10 +279,15 @@ export default {
                     let isFile = item.isFile();
                     let type = '';
                     let desc = '';
-                    let hide = (item.name[0] === '.' || item.name[0] === '$');
+                    let hide = (item.name[0] === '.' || item.name[0] === '$' || item.name[0] === '~');
                     let isMedia = false;
+                    let proload = '';
+                    let fileURL = `${url}${global.path.sep}${item.name}`;
+                    if(url[url.length - 1] === global.path.sep) {
+                        fileURL = `${url}${item.name}`;
+                    }
                     if(isFile) {
-                        let data = (<any>this).getDesc(`${url}${global.path.sep}${item.name}`, 'file');
+                        let data = (<any>this).getDesc(fileURL, 'file');
                         type = 'file';
                         desc = data.info;
                         files.desc.files++;
@@ -303,9 +295,14 @@ export default {
                             files.desc.hideFiles++;
                         }
                         isMedia = (<any>this).isMedia((<any>this).getExtension(item.name));
+                        if(isMedia && desc !== '无访问权限') {
+                            (<any>this).loadLocalSrc(fileURL, (base64: any) => {
+                                proload = base64;
+                            });
+                        }
                     }
                     else {
-                        let data = (<any>this).getDesc(`${url}${global.path.sep}${item.name}`, 'folder');
+                        let data = (<any>this).getDesc(fileURL, 'folder');
                         type = 'folder';
                         desc = data.info;
                         files.desc.folders++;
@@ -319,7 +316,8 @@ export default {
                         isMedia: isMedia,
                         desc: desc,
                         hide: hide,
-                        url: `${url}${global.path.sep}${item.name}`,
+                        proload: proload,
+                        url: fileURL,
                     });
                 });
                 return files;
@@ -333,8 +331,10 @@ export default {
         },
 
         // 读取本地资源
-        loadLocalSrc(url: String) {
-            
+        loadLocalSrc(url: String, callback: Function) {
+            if(callback) {
+                callback(`data:image/png;base64,${global.fs.readFileSync(url).toString('base64')}`);
+            }
         },
 
         // 读取文件或文件夹描述

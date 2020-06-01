@@ -20,7 +20,8 @@ function createWindow () {
       devTools: process.env.NODE_ENV === 'development' ? true : false,
       preload: path.join(__dirname, './public/preload.js'),
       nodeIntegration: true,
-      nodeIntegrationInWorker: true
+      nodeIntegrationInWorker: true,
+      webSecurity: false,
     },
   });
 
