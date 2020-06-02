@@ -1,3 +1,4 @@
+import Worker from 'worker-loader!./../../worker';
 declare var global: any;
 
 export default {
@@ -41,6 +42,8 @@ export default {
             audioExt: ['mp3'], // 音频扩展名
 
             loopTimer: null, // tabs监听防抖
+
+            worker: null, // worker线程
         }
     },
     created() {
@@ -335,48 +338,96 @@ export default {
         },
 
         // 读取本地资源
-        async loadLocalSrc(url: String, type: String) {
-            if(type === 'pic') {
-                try {
-                    return `data:image/png;base64,${global.fs.readFileSync(url).toString('base64')}`;
-                }
-                catch (error) {
-                    return '';
-                }
-            }
-            else {
-                return await global.app.getFileIcon(url, {
-                    size: global.os.type() === 'Darwin' ? 'normal' : 'large',
-                }).then((res: any) => {
-                    let binary = '';
-                    const bytes = new Uint8Array(res.toPNG());
-                    for (let i = 0; i < bytes.byteLength; i += 1) {
-                        binary += String.fromCharCode(bytes[i]);
-                    }
-                    return `data:image/png;base64,${window.btoa(binary)}`;
-                }, (rej: any) => {
-                    return '';
-                });
-            }
-        },
+        // async loadLocalSrc(url: String, type: String) {
+        //     if(type === 'pic') {
+        //         try {
+        //             return `data:image/png;base64,${global.fs.readFileSync(url).toString('base64')}`;
+        //         }
+        //         catch (error) {
+        //             return '';
+        //         }
+        //     }
+        //     else {
+        //         return await global.app.getFileIcon(url, {
+        //             size: global.os.type() === 'Darwin' ? 'normal' : 'large',
+        //         }).then((res: any) => {
+        //             let binary = '';
+        //             const bytes = new Uint8Array(res.toPNG());
+        //             for (let i = 0; i < bytes.byteLength; i += 1) {
+        //                 binary += String.fromCharCode(bytes[i]);
+        //             }
+        //             return `data:image/png;base64,${window.btoa(binary)}`;
+        //         }, (rej: any) => {
+        //             return '';
+        //         });
+        //     }
+        // },
 
         // 设置预渲染图片
-        setThumb() {
-            let _this = (<any>this);
-            for (let i = 0; i < _this.tabs.length; i++) {
-                for (let index = 0; index < _this.tabs[i].data.lists.length; index++) {
-                    if(_this.tabs[i].data.lists[index].type === 'file') {
-                        (function(tabIndex, itemIndex) {
-                            _this.loadLocalSrc(_this.tabs[tabIndex].data.lists[itemIndex].url, _this.tabs[tabIndex].data.lists[itemIndex].isMedia).then((res: any) => {
-                                _this.tabs[tabIndex].data.lists[itemIndex].proload = res;
-                            }, (rej: any) => {
-                                _this.tabs[tabIndex].data.lists[itemIndex].proload = rej;
-                            })
-                        })(i, index)
-                    }
-                }
-            }
-        },
+        // setThumb() {
+        //     let _this = (<any>this);
+        //     for (let i = 0; i < _this.tabs.length; i++) {
+        //         for (let index = 0; index < _this.tabs[i].data.lists.length; index++) {
+        //             if(_this.tabs[i].data.lists[index].type === 'file') {
+        //                 (function(tabIndex, itemIndex) {
+        //                     _this.loadLocalSrc(_this.tabs[tabIndex].data.lists[itemIndex].url, _this.tabs[tabIndex].data.lists[itemIndex].isMedia).then((res: any) => {
+        //                         // _this.tabs[tabIndex].data.lists[itemIndex].proload = res;
+        //                         // _this.cutImageBase64(res, 300, 0.1, (base64: any) => {
+        //                         //     // _this.tabs[tabIndex].data.lists[itemIndex].proload = base64;
+        //                         //     console.log(base64);
+        //                         // });
+        //                     }, (rej: any) => {
+        //                         _this.tabs[tabIndex].data.lists[itemIndex].proload = rej;
+        //                     })
+        //                 })(i, index)
+        //             }
+        //         }
+        //     }
+        // },
+
+        // base64压缩
+        // cutImageBase64(base64: any, w: any = 500, quality: any = 0.6, callback: Function) {
+        //     let newImage = new Image();
+        //     newImage.src = base64;
+        //     newImage.setAttribute("crossOrigin", 'Anonymous');  //url为外域时需要
+        //     let imgWidth, imgHeight;
+        //     newImage.onload = () => {
+        //         imgWidth = newImage.width;
+        //         imgHeight = newImage.height;
+        //         let canvas = document.createElement("canvas");
+        //         let ctx = canvas.getContext("2d");
+        //         if (Math.max(imgWidth, imgHeight) > w) {
+        //             if (imgWidth > imgHeight) {
+        //                 canvas.width = w;
+        //                 canvas.height = w * imgHeight / imgWidth;
+        //             }
+        //             else {
+        //                 canvas.height = w;
+        //                 canvas.width = w * imgWidth / imgHeight;
+        //             }
+        //         }
+        //         else {
+        //             canvas.width = imgWidth;
+        //             canvas.height = imgHeight;
+        //         }
+        //         if(ctx) {
+        //             ctx.clearRect(0, 0, canvas.width, canvas.height);
+        //             ctx.drawImage(newImage, 0, 0, canvas.width, canvas.height);
+        //         }
+        //         let newBase64 = canvas.toDataURL("image/jpeg", quality); //压缩语句
+        //         // 如想确保图片压缩到自己想要的尺寸,如要求在50-150kb之间，请加以下语句，quality初始值根据情况自定
+        //         while (newBase64.length / 1024 > 150) {
+        //             quality -= 0.01;
+        //             newBase64 = canvas.toDataURL("image/jpeg", quality);
+        //         }
+        //         // 防止最后一次压缩低于最低尺寸，只要quality递减合理，无需考虑
+        //         while (newBase64.length / 1024 < 50) {
+        //             quality += 0.001;
+        //             newBase64 = canvas.toDataURL("image/jpeg", quality);
+        //         }
+        //         callback(newBase64);
+        //     }
+        // },
 
         // 读取文件或文件夹描述
         getDesc(url: String, type: String) {
@@ -434,17 +485,37 @@ export default {
 
         // 空格预览
         handleSpace(data: any) {
-            localStorage.setItem('preview', data.proload);
             global.ipcRenderer.send('preview', data);
+        },
+
+        // 多线程
+        setWorker(data: any, callback: Function) {
+            (<any>this).worker = new Worker();
+            (<any>this).worker.postMessage({
+                tabs: data,
+            });
+            (<any>this).worker.addEventListener("message", (e: any) => {
+                if(e.data && e.data.tabs) {
+                    if(callback) {
+                        callback(e.data.tabs);
+                    }
+                    (<any>this).worker.terminate(); // 关闭主进程
+                }
+            });
         },
     },
     watch: {
         tabs: {
             immediate: true,
-            deep: true,
+            // deep: true,
             handler(val: any) {
                 clearTimeout((<any>this).loopTimer);
-                (<any>this).loopTimer = setTimeout((<any>this).setThumb, 500);
+                // (<any>this).loopTimer = setTimeout((<any>this).setThumb, 500);
+                (<any>this).loopTimer = setTimeout(() => {
+                    (<any>this).setWorker(val, (data: any) => {
+                        console.log(data);
+                    });
+                }, 500);
             }
         },
     },

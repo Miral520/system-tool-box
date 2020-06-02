@@ -24,7 +24,7 @@ Vue.use(vuescroll, {
 Vue.prototype.$fn = utils.mixin;
 Vue.prototype.$var = utils.vars;
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 new Vue({
   router,

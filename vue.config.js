@@ -27,6 +27,14 @@ module.exports = {
     }
   },
   chainWebpack: (config) => {
+    // 添加 worker-loader
+    config.module
+        .rule('worker')
+        .test(/\.worker\.js$/)
+        .use('worker-loader')
+        .loader('worker-loader')
+        .end();
+
     // 设置目录别名
     config.resolve.alias
         .set('@', resolve('src'))
@@ -38,5 +46,6 @@ module.exports = {
         .set('store',resolve('src/store'))
         .set('utils',resolve('src/utils'))
         .set('views',resolve('src/views'))
+        .set('workers',resolve('src/workers'));
   },
 }
