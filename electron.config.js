@@ -79,13 +79,17 @@ function createWindow () {
 
   // 监听加载状态
   ipcMain.on('changeWinSize', (e, arg) => {
-    let size = screenData.workAreaSize;
-    win.setContentBounds({
-      x: (size.width / 2) - 600,
-      y: (size.height / 2) - 400,
-      width: 1200,
-      height: 800,
-    }, true);
+    let size = screenData.workAreaSize
+    let x = (size.width / 2) - 600;
+    let y = (size.height / 2) - 400;
+    setTimeout(() => {
+      win.setContentBounds({
+        x: x ? parseInt(x) : 10,
+        y: y ? parseInt(y) : 10,
+        width: 1200,
+        height: 800,
+      }, true);
+    }, 500);
   });
 
   // 传递操作系统信息
