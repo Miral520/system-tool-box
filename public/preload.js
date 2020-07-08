@@ -18,6 +18,7 @@ global.electron = require('electron');
 global.ipcRenderer = global.electron.ipcRenderer;
 global.remote = global.electron.remote;
 global.app = global.remote.app;
+global.nativeImage = global.electron.nativeImage;
 
 // node
 global.fs = require('fs');

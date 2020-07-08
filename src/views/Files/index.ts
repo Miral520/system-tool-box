@@ -44,6 +44,13 @@ export default {
             loopTimer: null, // tabs监听防抖
 
             worker: null, // worker线程
+
+            preview: {}, // 缩略图
+
+            preSize: { // 缩略图最大尺寸
+                maxWidth: 100,
+                maxHeight: 100,
+            },
         }
     },
     created() {
@@ -263,6 +270,7 @@ export default {
 
         // 读取指定目录下文件
         loadFiles(url: String, showMsg: Boolean = true) {
+            (<any>this).preview = {};
             try {
                 let allFiles = global.fs.readdirSync(url, {
                     withFileTypes: true,
@@ -283,7 +291,7 @@ export default {
                     let type = '';
                     let desc = '';
                     let hide = (item.name[0] === '.' || item.name[0] === '$' || item.name[0] === '~');
-                    let isMedia = false;
+                    let isMedia = '';
                     let proload = '';
                     let fileURL = `${url}${global.path.sep}${item.name}`;
                     if(url[url.length - 1] === global.path.sep) {
@@ -298,6 +306,11 @@ export default {
                             files.desc.hideFiles++;
                         }
                         isMedia = (<any>this).isMedia((<any>this).getExtension(item.name));
+                        if(isMedia === 'pic') {
+                            (<any>this).handlePreview(fileURL).then((res: any) => {
+                                (<any>this).preview[fileURL] = res;
+                            });
+                        }
                     }
                     else {
                         let data = (<any>this).getDesc(fileURL, 'folder');
@@ -393,7 +406,7 @@ export default {
 
         // 空格预览
         handleSpace(data: any) {
-            global.ipcRenderer.send('preview', data);
+            // global.ipcRenderer.send('preview', data);
         },
 
         // 多线程
@@ -403,25 +416,85 @@ export default {
                 tabs: data,
             });
             (<any>this).worker.addEventListener("message", (e: any) => {
-                if(e.data && e.data.tabs) {
-                    if(callback) {
-                        callback(e.data.tabs);
+                // if(e.data && e.data.tabs) {
+                //     if(callback) {
+                //         callback(e.data.tabs);
+                //     }
+                //     (<any>this).worker.terminate(); // 关闭主进程
+                // }
+            });
+        },
+
+        // 获取缩略图
+        async handlePreview(url: any) {
+            return await (<any>this).getBase64(url);
+        },
+
+        // 获取base64
+        getBase64(url: any) {
+            return new Promise((resolve, reject) => {
+                let img = global.nativeImage.createFromPath(url);
+                let size = img.getSize();
+                let ratio = img.getAspectRatio();
+                if(size.width > (<any>this).preSize.maxWidth && size.height > (<any>this).preSize.maxHeight) {
+                    let width = (<any>this).preSize.maxWidth;
+                    let height = (<any>this).preSize.maxHeight;
+                    if(ratio >= 1) {
+                        height = (<any>this).preSize.maxWidth / ratio;
                     }
-                    (<any>this).worker.terminate(); // 关闭主进程
+                    else {
+                        width = (<any>this).preSize.maxHeight * ratio;
+                    }
+                    img = img.resize({
+                        width: width,
+                        height: height,
+                        quality: 'good',
+                    });
                 }
+                img = img.toPNG({
+                    scaleFactor: 0.8,
+                }).toString('base64');
+                resolve(`data:image/png;base64,${img}`);
+            });
+        },
+
+        // 遍历赋予缩略图
+        setPreview(tabs: any) {
+            (<any>this).$nextTick(() => {
+                let timer = setInterval(() => {
+                    if(JSON.stringify((<any>this).preview) !== '{}') {
+                        clearInterval(timer);
+                        for (const key in (<any>this).preview) {
+                            for (let i = 0; i < tabs.length; i++) {
+                                let breakout = false;
+                                for (let index = 0; index < tabs[i].data.lists.length; index++) {
+                                    if(tabs[i].data.lists[index].url === key) {
+                                        tabs[i].data.lists[index].proload = (<any>this).preview[key];
+                                        breakout = true;
+                                        break;
+                                    }
+                                }
+                                if(breakout) {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }, 10);
             });
         },
     },
     watch: {
         tabs: {
             // immediate: true,
-            // deep: true,
+            deep: true,
             handler(val: any) {
                 clearTimeout((<any>this).loopTimer);
                 (<any>this).loopTimer = setTimeout(() => {
-                    (<any>this).setWorker(val, (data: any) => {
-                        (<any>this).tabs = data;
-                    });
+                    // (<any>this).setWorker(val, (data: any) => {
+                    //     // (<any>this).tabs = data;
+                    // });
+                    (<any>this).setPreview((<any>this).tabs);
                 }, 500);
             }
         },
