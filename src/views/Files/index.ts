@@ -35,7 +35,7 @@ export default {
 
             units: ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB', 'BB'], // 单位
 
-            picExt: ['jpg', 'jpeg', 'png', 'gif'], // 图片扩展名
+            picExt: ['jpg', 'jpeg', 'png'], // 图片扩展名
 
             videoExt: ['mp4'], // 视频扩展名
 
@@ -307,9 +307,10 @@ export default {
                         }
                         isMedia = (<any>this).isMedia((<any>this).getExtension(item.name));
                         if(isMedia === 'pic') {
-                            (<any>this).handlePreview(fileURL).then((res: any) => {
-                                (<any>this).preview[fileURL] = res;
-                            });
+                            // (<any>this).handlePreview(fileURL).then((res: any) => {
+                            //     (<any>this).preview[fileURL] = res;
+                            // });
+                            proload = (<any>this).getPreview(fileURL);
                         }
                     }
                     else {
@@ -426,62 +427,88 @@ export default {
         },
 
         // 获取缩略图
-        async handlePreview(url: any) {
-            return await (<any>this).getBase64(url);
-        },
+        // async handlePreview(url: any) {
+        //     return await (<any>this).getBase64(url);
+        // },
 
         // 获取base64
-        getBase64(url: any) {
-            return new Promise((resolve, reject) => {
-                let img = global.nativeImage.createFromPath(url);
-                let size = img.getSize();
-                let ratio = img.getAspectRatio();
-                if(size.width > (<any>this).preSize.maxWidth || size.height > (<any>this).preSize.maxHeight) {
-                    let width = (<any>this).preSize.maxWidth;
-                    let height = (<any>this).preSize.maxHeight;
-                    if(ratio >= 1) {
-                        height = (<any>this).preSize.maxWidth / ratio;
-                    }
-                    else {
-                        width = (<any>this).preSize.maxHeight * ratio;
-                    }
-                    img = img.resize({
-                        width: width,
-                        height: height,
-                        quality: 'good',
-                    });
-                }
-                img = img.toPNG({
-                    scaleFactor: 0.8,
-                }).toString('base64');
-                resolve(`data:image/png;base64,${img}`);
-            });
-        },
+        // getBase64(url: any) {
+        //     return new Promise((resolve, reject) => {
+        //         let img = global.nativeImage.createFromPath(url);
+        //         let size = img.getSize();
+        //         let ratio = img.getAspectRatio();
+        //         if(size.width > (<any>this).preSize.maxWidth || size.height > (<any>this).preSize.maxHeight) {
+        //             let width = (<any>this).preSize.maxWidth;
+        //             let height = (<any>this).preSize.maxHeight;
+        //             if(ratio >= 1) {
+        //                 height = (<any>this).preSize.maxWidth / ratio;
+        //             }
+        //             else {
+        //                 width = (<any>this).preSize.maxHeight * ratio;
+        //             }
+        //             img = img.resize({
+        //                 width: width,
+        //                 height: height,
+        //                 quality: 'good',
+        //             });
+        //         }
+        //         img = img.toPNG({
+        //             scaleFactor: 0.8,
+        //         }).toString('base64');
+        //         resolve(`data:image/png;base64,${img}`);
+        //     });
+        // },
 
         // 遍历赋予缩略图
-        setPreview(tabs: any) {
-            (<any>this).$nextTick(() => {
-                let timer = setInterval(() => {
-                    if(JSON.stringify((<any>this).preview) !== '{}') {
-                        clearInterval(timer);
-                        for (const key in (<any>this).preview) {
-                            for (let i = 0; i < tabs.length; i++) {
-                                let breakout = false;
-                                for (let index = 0; index < tabs[i].data.lists.length; index++) {
-                                    if(tabs[i].data.lists[index].url === key) {
-                                        tabs[i].data.lists[index].proload = (<any>this).preview[key];
-                                        breakout = true;
-                                        break;
-                                    }
-                                }
-                                if(breakout) {
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }, 10);
-            });
+        // setPreview(tabs: any) {
+        //     (<any>this).$nextTick(() => {
+        //         let timer = setInterval(() => {
+        //             if(JSON.stringify((<any>this).preview) !== '{}') {
+        //                 clearInterval(timer);
+        //                 for (const key in (<any>this).preview) {
+        //                     for (let i = 0; i < tabs.length; i++) {
+        //                         let breakout = false;
+        //                         for (let index = 0; index < tabs[i].data.lists.length; index++) {
+        //                             if(tabs[i].data.lists[index].url === key) {
+        //                                 tabs[i].data.lists[index].proload = (<any>this).preview[key];
+        //                                 breakout = true;
+        //                                 break;
+        //                             }
+        //                         }
+        //                         if(breakout) {
+        //                             break;
+        //                         }
+        //                     }
+        //                 }
+        //             }
+        //         }, 10);
+        //     });
+        // },
+
+        // 获取缩略图
+        getPreview(url: any) {
+            let img = global.nativeImage.createFromPath(url);
+            let size = img.getSize();
+            let ratio = img.getAspectRatio();
+            if(size.width > (<any>this).preSize.maxWidth || size.height > (<any>this).preSize.maxHeight) {
+                let width = (<any>this).preSize.maxWidth;
+                let height = (<any>this).preSize.maxHeight;
+                if(ratio >= 1) {
+                    height = (<any>this).preSize.maxWidth / ratio;
+                }
+                else {
+                    width = (<any>this).preSize.maxHeight * ratio;
+                }
+                img = img.resize({
+                    width: width,
+                    height: height,
+                    quality: 'good',
+                });
+            }
+            img = img.toPNG({
+                scaleFactor: 0.8,
+            }).toString('base64');
+            return `data:image/png;base64,${img}`;
         },
     },
     watch: {
@@ -494,7 +521,7 @@ export default {
                     // (<any>this).setWorker(val, (data: any) => {
                     //     // (<any>this).tabs = data;
                     // });
-                    (<any>this).setPreview((<any>this).tabs);
+                    // (<any>this).setPreview((<any>this).tabs);
                 }, 500);
             }
         },
