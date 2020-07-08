@@ -436,7 +436,7 @@ export default {
                 let img = global.nativeImage.createFromPath(url);
                 let size = img.getSize();
                 let ratio = img.getAspectRatio();
-                if(size.width > (<any>this).preSize.maxWidth && size.height > (<any>this).preSize.maxHeight) {
+                if(size.width > (<any>this).preSize.maxWidth || size.height > (<any>this).preSize.maxHeight) {
                     let width = (<any>this).preSize.maxWidth;
                     let height = (<any>this).preSize.maxHeight;
                     if(ratio >= 1) {
