@@ -310,6 +310,7 @@ export default {
                             // (<any>this).handlePreview(fileURL).then((res: any) => {
                             //     (<any>this).preview[fileURL] = res;
                             // });
+                            
                             proload = (<any>this).getPreview(fileURL);
                         }
                     }
@@ -511,19 +512,19 @@ export default {
             return `data:image/png;base64,${img}`;
         },
     },
-    watch: {
-        tabs: {
-            // immediate: true,
-            deep: true,
-            handler(val: any) {
-                clearTimeout((<any>this).loopTimer);
-                (<any>this).loopTimer = setTimeout(() => {
-                    // (<any>this).setWorker(val, (data: any) => {
-                    //     // (<any>this).tabs = data;
-                    // });
-                    // (<any>this).setPreview((<any>this).tabs);
-                }, 500);
-            }
-        },
-    },
+    // watch: {
+    //     tabs: {
+    //         // immediate: true,
+    //         deep: true,
+    //         handler(val: any) {
+    //             clearTimeout((<any>this).loopTimer);
+    //             (<any>this).loopTimer = setTimeout(() => {
+    //                 // (<any>this).setWorker(val, (data: any) => {
+    //                 //     // (<any>this).tabs = data;
+    //                 // });
+    //                 // (<any>this).setPreview((<any>this).tabs);
+    //             }, 500);
+    //         }
+    //     },
+    // },
 }
