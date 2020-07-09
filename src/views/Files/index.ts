@@ -45,7 +45,7 @@ export default {
 
             worker: null, // worker线程
 
-            preview: {}, // 缩略图
+            // preview: {}, // 缩略图
 
             preSize: { // 缩略图最大尺寸
                 maxWidth: 100,
@@ -306,13 +306,6 @@ export default {
                             files.desc.hideFiles++;
                         }
                         isMedia = (<any>this).isMedia((<any>this).getExtension(item.name));
-                        if(isMedia === 'pic') {
-                            // (<any>this).handlePreview(fileURL).then((res: any) => {
-                            //     (<any>this).preview[fileURL] = res;
-                            // });
-                            
-                            proload = (<any>this).getPreview(fileURL);
-                        }
                     }
                     else {
                         let data = (<any>this).getDesc(fileURL, 'folder');
@@ -416,115 +409,37 @@ export default {
             (<any>this).worker = new Worker();
             (<any>this).worker.postMessage({
                 tabs: data,
+                maxSize: (<any>this).preSize,
             });
             (<any>this).worker.addEventListener("message", (e: any) => {
-                // if(e.data && e.data.tabs) {
-                //     if(callback) {
-                //         callback(e.data.tabs);
-                //     }
-                //     (<any>this).worker.terminate(); // 关闭主进程
-                // }
+                if(e.data) {
+                    if(e.data.proview) {
+                        if(callback) {
+                            callback(e.data.proview);
+                        }
+                    }
+                    // (<any>this).worker.terminate(); // 关闭主进程
+                }
             });
         },
 
-        // 获取缩略图
-        // async handlePreview(url: any) {
-        //     return await (<any>this).getBase64(url);
-        // },
-
-        // 获取base64
-        // getBase64(url: any) {
-        //     return new Promise((resolve, reject) => {
-        //         let img = global.nativeImage.createFromPath(url);
-        //         let size = img.getSize();
-        //         let ratio = img.getAspectRatio();
-        //         if(size.width > (<any>this).preSize.maxWidth || size.height > (<any>this).preSize.maxHeight) {
-        //             let width = (<any>this).preSize.maxWidth;
-        //             let height = (<any>this).preSize.maxHeight;
-        //             if(ratio >= 1) {
-        //                 height = (<any>this).preSize.maxWidth / ratio;
-        //             }
-        //             else {
-        //                 width = (<any>this).preSize.maxHeight * ratio;
-        //             }
-        //             img = img.resize({
-        //                 width: width,
-        //                 height: height,
-        //                 quality: 'good',
-        //             });
-        //         }
-        //         img = img.toPNG({
-        //             scaleFactor: 0.8,
-        //         }).toString('base64');
-        //         resolve(`data:image/png;base64,${img}`);
-        //     });
-        // },
-
-        // 遍历赋予缩略图
-        // setPreview(tabs: any) {
-        //     (<any>this).$nextTick(() => {
-        //         let timer = setInterval(() => {
-        //             if(JSON.stringify((<any>this).preview) !== '{}') {
-        //                 clearInterval(timer);
-        //                 for (const key in (<any>this).preview) {
-        //                     for (let i = 0; i < tabs.length; i++) {
-        //                         let breakout = false;
-        //                         for (let index = 0; index < tabs[i].data.lists.length; index++) {
-        //                             if(tabs[i].data.lists[index].url === key) {
-        //                                 tabs[i].data.lists[index].proload = (<any>this).preview[key];
-        //                                 breakout = true;
-        //                                 break;
-        //                             }
-        //                         }
-        //                         if(breakout) {
-        //                             break;
-        //                         }
-        //                     }
-        //                 }
-        //             }
-        //         }, 10);
-        //     });
-        // },
-
-        // 获取缩略图
-        getPreview(url: any) {
-            let img = global.nativeImage.createFromPath(url);
-            let size = img.getSize();
-            let ratio = img.getAspectRatio();
-            if(size.width > (<any>this).preSize.maxWidth || size.height > (<any>this).preSize.maxHeight) {
-                let width = (<any>this).preSize.maxWidth;
-                let height = (<any>this).preSize.maxHeight;
-                if(ratio >= 1) {
-                    height = (<any>this).preSize.maxWidth / ratio;
-                }
-                else {
-                    width = (<any>this).preSize.maxHeight * ratio;
-                }
-                img = img.resize({
-                    width: width,
-                    height: height,
-                    quality: 'good',
-                });
-            }
-            img = img.toPNG({
-                scaleFactor: 0.8,
-            }).toString('base64');
-            return `data:image/png;base64,${img}`;
+        // 设置缩略图
+        setProload(data: any) {
+            (<any>this).tabs[data.tabIndex].data.lists[data.listIndex].proload = data.proload;
         },
     },
-    // watch: {
-    //     tabs: {
-    //         // immediate: true,
-    //         deep: true,
-    //         handler(val: any) {
-    //             clearTimeout((<any>this).loopTimer);
-    //             (<any>this).loopTimer = setTimeout(() => {
-    //                 // (<any>this).setWorker(val, (data: any) => {
-    //                 //     // (<any>this).tabs = data;
-    //                 // });
-    //                 // (<any>this).setPreview((<any>this).tabs);
-    //             }, 500);
-    //         }
-    //     },
-    // },
+    watch: {
+        tabs: {
+            // immediate: true,
+            deep: true,
+            handler(val: any) {
+                clearTimeout((<any>this).loopTimer);
+                (<any>this).loopTimer = setTimeout(() => {
+                    (<any>this).setWorker(val, (data: any) => {
+                        (<any>this).setProload(data);
+                    });
+                }, 500);
+            }
+        },
+    },
 }

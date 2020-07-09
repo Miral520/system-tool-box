@@ -5,6 +5,9 @@ function resolve (dir) {
 }
 
 module.exports = {
+  devServer: {
+    port: 8888, // 端口
+  },
   publicPath: './',
   css: {
     requireModuleExtension: true,

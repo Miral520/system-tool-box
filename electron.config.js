@@ -25,7 +25,7 @@ function createWindow () {
     },
   });
 
-  let loadAdd = 'http://localhost:8080/';
+  let loadAdd = 'http://localhost:8888/';
   if(process.env.NODE_ENV === 'development') {
     loadAdd += '?mode=dev';
     win.webContents.openDevTools();
