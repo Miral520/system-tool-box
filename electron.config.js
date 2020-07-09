@@ -30,19 +30,40 @@ function createWindow () {
     loadAdd += '?mode=dev';
     win.webContents.openDevTools();
   }
+  else {
+    loadAdd += '?mode=prod';
+  }
 
   win.loadURL(loadAdd);
 
   // 监听新建预览窗口
   ipcMain.on('preview', (e, arg) => {
+    let width = 550;
+    let height = 300;
+    if(arg.type === 'file') {
+      if(arg.isMedia === 'pic') {
+        let size = screen.getPrimaryDisplay().workAreaSize;
+        width = 1440;
+        height = 900;
+        // if(arg.width >= arg.height) {
+        //   if(arg.width > size.width) {
+
+        //   }
+        // }
+        // else {
+
+        // }
+      }
+    }
     preview = new BrowserWindow({
-      width: 600, 
-      height: 400,
-      frame: true,
+      width: width, 
+      height: height,
+      frame: false,
       parent: win,
       center: true,
       resizable: true,
       hasShadow: true,
+      transparent: true,
       webPreferences: {
         devTools: process.env.NODE_ENV === 'development' ? true : false,
         preload: path.join(__dirname, './public/preload.js'),
@@ -52,12 +73,20 @@ function createWindow () {
       },
     })
     preview.loadURL(path.join('file:', __dirname, 'public', 'preview.html'));
-    preview.on('closed',()=>{
-      preview = null;
+    preview.webContents.on('did-finish-load', () => {
+      preview.webContents.send('preview', {
+        target: arg,
+      });
     });
-    preview.webContents.openDevTools();
-    
-    preview.webContents.executeJavaScript('localStorage.setItem("prvURL",' + arg.proload + ')');
+    preview.on('closed',()=>{
+      win.webContents.send('canSpace');
+    });
+    ipcMain.on('closePreview', (e, arg) => {
+      preview.destroy();
+    });
+    if(process.env.NODE_ENV === 'development') {
+      preview.webContents.openDevTools();
+    }
   });
 
   // 监听最小化

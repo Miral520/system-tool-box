@@ -8,14 +8,61 @@
         * {
             margin: 0;
             padding: 0;
+            list-style: none;
+            text-decoration: none;
         }
         html, body {
             width: 100%;
             height: 100%;
+            background: transparent;
+            overflow: hidden;
         }
         .preview {
             width: 100vw;
             height: 100vh;
+            overflow: hidden;
+            border-radius: 5px;
+            border: 1px solid #e8e8e8;
+            background: #f5f5f5;
+        }
+        .header {
+            width: 100%;
+            height: 40px;
+            overflow: hidden;
+            padding: 0 15px;
+            box-sizing: border-box;
+            border-bottom: 1px solid #e8e8e8;
+            background: #fff;
+            -webkit-app-region: drag;
+        }
+        .header-ctrl {
+            width: 12px;
+            height: 12px;
+            margin: 14px 0;
+            line-height: 12px;
+            text-align: center;
+            border-radius: 50%;
+            background: #fe5f59;
+            -webkit-app-region: no-drag;
+            -webkit-user-select: none;
+        }
+        .header-ctrl-btn {
+            display: none;
+            color: #000;
+            font-size: 12px;
+            height: 100%;
+            vertical-align: top;
+            margin-top: -1px;
+        }
+        .header-ctrl:hover .header-ctrl-btn {
+            display: inline-block;
+        }
+        .preview-layout {
+            width: 100%;
+            height: calc(100% - 40px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .preview_main {
             max-width: 100%;
@@ -23,17 +70,70 @@
             width: auto;
             height: auto;
         }
+        .file_text {
+            margin-left: 50px;
+        }
+        .file_name {
+            font-size: 18px;
+            color: #666;
+            font-weight: bold;
+        }
+        .file_url {
+            font-size: 14px;
+            color: #999;
+            margin: 8px 0;
+        }
+        .file_desc {
+            font-size: 14px;
+            color: #999;
+        }
     </style>
     <script src="./renderer.js"></script>
 </head>
 <body>
     <div class="preview">
-        <img src="" class="preview_main" id="preMain">
+        <ul class="header">
+            <li class="header-ctrl">
+                <a class="header-ctrl-btn" href="javascript:void(0)" onclick="closeWin()">x</a>
+            </li>
+        </ul>
+        <div class="preview-layout" id="preLayout">
+            <img src="" class="preview_main" id="preMain">
+        </div>
+        <div class="preview-layout" id="preFileLayout">
+            <img src="../src/assets/img/files_icon.png" class="file_icon" id="fileIcon">
+            <div class="file_text">
+                <p class="file_name" id="fileName"></p>
+                <p class="file_url" id="fileUrl"></p>
+                <p class="file_desc" id="fileDesc"></p>
+            </div>
+        </div>
     </div>
     <script>
         window.onload = () => {
-            console.log(localStorage.getItem('prvURL'));
-            // document.getElementById('preMain').src = url;
+            global.ipcRenderer.on('preview', (event, message) => {
+                if(message.target.isMedia === 'pic') {
+                    document.getElementById('preMain').src = message.target.url;
+                }
+                else {
+                    document.getElementById('preLayout').style.display = 'none';
+                    document.getElementById('preFileLayout').style.display = 'flex';
+                    document.getElementById('fileName').innerText = message.target.name;
+                    document.getElementById('fileUrl').innerText = message.target.url;
+                    document.getElementById('fileDesc').innerText = message.target.desc;
+                    document.getElementById('preMain').src = `../src/assets/img/${message.target.type === 'file' ? 'files' : 'folder'}_icon.png`;
+                }
+            });
+        }
+        document.body.onkeydown = function(ev){
+            var e = ev || event;
+            if(e.keyCode == 32){
+                e.preventDefault();
+                closeWin();
+            }
+        }
+        function closeWin() {
+            global.ipcRenderer.send('closePreview');
         }
     </script>
 </body>

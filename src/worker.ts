@@ -4,6 +4,7 @@ declare var global: any;
 const ctx: Worker = self as any;
 const fs: any = global.require('fs');
 const electron: any = global.require('electron');
+
 let maxSize: any = null;
 
 ctx.addEventListener('message', (e: any) => {
@@ -25,9 +26,12 @@ const mapTabs = (tabs: any) => {
                 handlePreview(file.url).then((res: any) => {
                     ctx.postMessage({
                         proview: {
-                            proload: res,
+                            proload: res.base64,
                             tabIndex: tabIndex,
                             listIndex: index,
+                            width: res.width,
+                            height: res.height,
+                            ratio: res.ratio,
                         },
                     });
                 });
@@ -65,7 +69,12 @@ const getBase64 = (url: any) => {
         img = img.toPNG({
             scaleFactor: 0.8,
         }).toString('base64');
-        resolve(`data:image/png;base64,${img}`);
+        resolve({
+            base64: `data:image/png;base64,${img}`,
+            width: size.width,
+            height: size.height,
+            ratio: ratio,
+        });
     });
 };
 

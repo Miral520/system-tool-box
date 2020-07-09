@@ -16,5 +16,13 @@
 
     <!-- You can also require other files to run in this process -->
     <script src="./renderer.js"></script>
+    <script>
+      document.body.onkeydown = function(ev){
+        var e = ev || event;
+        if(e.keyCode == 32){
+          e.preventDefault();
+        }
+      }
+    </script>
   </body>
 </html>

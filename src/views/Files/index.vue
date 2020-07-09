@@ -32,7 +32,7 @@
                 <a-list-item slot="renderItem" slot-scope="file, i" v-show="!(file.hide && hidden)">
                   <!-- 缩略图 -->
                   <a-card class="files_list" v-if="isThumb" :bordered="false" :bodyStyle="{padding: 0}" hoverable>
-                    <a href="javascript:void(0)" class="files_link" :fid="i" @dblclick="openFile(file)" @click="handleClick(file)" @contextmenu.prevent="handleMenu(file)" @keyup="handleSpace(file)">
+                    <a href="javascript:void(0)" class="files_link" :fid="i" @dblclick="openFile(file)" @click="handleClick(file)" @contextmenu.prevent="handleMenu(file)" @keyup.32="handleSpace(file)">
                       <div class="files_icon" v-if="file.proload">
                         <img :src="file.proload" />
                       </div>
@@ -44,7 +44,7 @@
 
                   <!-- 列表 -->
                   <div class="files_col" v-else>
-                    <a-list-item-meta :description="file.desc" @dblclick="openFile(file)" @click="handleClick(file)" @contextmenu.prevent="handleMenu(file)" @keyup="handleSpace(file)">
+                    <a-list-item-meta :description="file.desc" @dblclick="openFile(file)" @click="handleClick(file)" @contextmenu.prevent="handleMenu(file)" @keyup.32="handleSpace(file)">
                       <a slot="title" href="javascript:void(0)" :fid="i" :title="file.name">{{ file.name }}</a>
                       <a-avatar slot="avatar" size="large" :src="file.proload" :icon="file.type"  style="color: #1890ff; backgroundColor: #e6f7ff" />
                     </a-list-item-meta>

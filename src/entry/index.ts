@@ -91,6 +91,9 @@ export default<any> {
                     },
                 },
             },
+
+            // 开发模式
+            mode: '',
         }
     },
     created() {
@@ -107,9 +110,9 @@ export default<any> {
     methods: {
         // 初始化
         init() {
-            let mode = (<any>this).$fn.getUrlSearch('mode');
-            if(mode === 'dev') {
-                (<any>this).$store.commit('setMode', mode);
+            (<any>this).mode = (<any>this).$fn.getUrlSearch('mode') === 'prod' ? 'prod' : 'dev';
+            if((<any>this).mode === 'dev') {
+                (<any>this).$store.commit('setMode', (<any>this).mode);
                 (<any>this).loadingWin.show = false;
             }
         },
@@ -198,7 +201,7 @@ export default<any> {
             let timer = setTimeout(() => {
                 clearTimeout(timer);
                 global.ipcRenderer.send('changeWinSize');
-            }, 1000);
+            }, (<any>this).mode === 'dev' ? 0 : 1000);
         },
 
         // 加载
@@ -211,7 +214,7 @@ export default<any> {
                             callback();
                         }
                     }
-                    (<any>this).loadingWin.percent += Math.round(100 / parseInt((<any>this).loadingWin.sec) / 20);
+                    (<any>this).loadingWin.percent += Math.round(100 / parseInt((<any>this).mode === 'dev' ? 0 : (<any>this).loadingWin.sec) / 20);
                 }, 50);
             }
         },

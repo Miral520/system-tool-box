@@ -45,7 +45,7 @@ export default {
 
             worker: null, // worker线程
 
-            // preview: {}, // 缩略图
+            canUseSpace: true, // 可以使用空格
 
             preSize: { // 缩略图最大尺寸
                 maxWidth: 100,
@@ -55,6 +55,7 @@ export default {
     },
     created() {
         (<any>this).init();
+        (<any>this).watchSpace();
     },
     methods: {
         // 初始化
@@ -401,7 +402,20 @@ export default {
 
         // 空格预览
         handleSpace(data: any) {
-            // global.ipcRenderer.send('preview', data);
+            if((<any>this).canUseSpace) {
+                global.ipcRenderer.send('preview', data);
+            }
+            (<any>this).canUseSpace = false;
+        },
+
+        // 监听空格键可用性
+        watchSpace() {
+            global.ipcRenderer.on('canSpace', (event: any, message: any) => {
+                let timer = setTimeout(() => {
+                    clearTimeout(timer);
+                    (<any>this).canUseSpace = true;
+                }, 1000);
+            });
         },
 
         // 多线程
@@ -415,7 +429,10 @@ export default {
                 if(e.data) {
                     if(e.data.proview) {
                         if(callback) {
-                            callback(e.data.proview);
+                            let timer = setTimeout(() => {
+                                clearTimeout(timer);
+                                callback(e.data.proview);
+                            }, 0);
                         }
                     }
                     // (<any>this).worker.terminate(); // 关闭主进程
@@ -426,6 +443,9 @@ export default {
         // 设置缩略图
         setProload(data: any) {
             (<any>this).tabs[data.tabIndex].data.lists[data.listIndex].proload = data.proload;
+            (<any>this).tabs[data.tabIndex].data.lists[data.listIndex].width = data.width;
+            (<any>this).tabs[data.tabIndex].data.lists[data.listIndex].height = data.height;
+            (<any>this).tabs[data.tabIndex].data.lists[data.listIndex].ratio = data.ratio;
         },
     },
     watch: {

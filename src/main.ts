@@ -17,6 +17,7 @@ Vue.use(vuescroll, {
     },
     bar: {
       background: '#dddee0',
+      onlyShowBarOnScroll: false,
     },
   },
 });
