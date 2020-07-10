@@ -22,7 +22,7 @@ ctx.addEventListener('message', (e: any) => {
 const mapTabs = (tabs: any) => {
     tabs.forEach((tab: any, tabIndex: any) => {
         tab.data.lists.forEach((file: any, index: any) => {
-            if(file.isMedia === 'pic' && !file.proload) {
+            if(file.isMedia === 'pic') {
                 (function(t_i, i) {
                     setTimeout(() => {
                         handlePreview(file.url).then((res: any) => {
