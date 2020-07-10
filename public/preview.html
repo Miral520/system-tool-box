@@ -23,7 +23,7 @@
             overflow: hidden;
             border-radius: 5px;
             border: 1px solid #e8e8e8;
-            background: #f5f5f5;
+            background: #fefefe;
         }
         .header {
             width: 100%;
@@ -121,7 +121,7 @@
                     document.getElementById('fileName').innerText = message.target.name;
                     document.getElementById('fileUrl').innerText = message.target.url;
                     document.getElementById('fileDesc').innerText = message.target.desc;
-                    document.getElementById('preMain').src = `../src/assets/img/${message.target.type === 'file' ? 'files' : 'folder'}_icon.png`;
+                    document.getElementById('fileIcon').src = `../src/assets/img/${message.target.type === 'file' ? 'files' : 'folder'}_icon.png`;
                 }
             });
         }

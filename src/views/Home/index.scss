@@ -20,6 +20,73 @@
     }
     .home_statistic {
         width: 100%;
-        margin-bottom: 10px;
+        height: auto;
+        display: inline-block;
+        .model {
+            width: 100%;
+            margin: 0;
+            margin-top: 20px;
+            &.no-top {
+                margin-top: 0;
+            }
+            .cpu_layout {
+                margin-bottom: 15px;
+                .cpu_name {
+                    font-size: 14px;
+                    line-height: 18px;
+                    height: 18px;
+                    margin-bottom: 10px;
+                    @include text-omitte;
+                    i {
+                        color: #1890ff;
+                        margin-right: 10px;
+                    }
+                    span {
+                        font-weight: bold;
+                        color: #666;
+                    }
+                }
+                .cpu_desc {
+                    font-size: 12px;
+                    color: #999;
+                    height: 14px;
+                    margin: 0;
+                    @include text-omitte;
+                }
+            }
+            .list {
+                margin-bottom: 30px;
+                &:last-child {
+                    margin-bottom: 0;
+                }
+                .list_text {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 5px;
+                    font-size: 14px;
+                    .list_name {
+                        font-weight: bold;
+                        color: #666;
+                    }
+                    .list_value {
+                        color: #999;
+                    }
+                }
+                .list_networks {
+                    margin: 0;
+                    display: inline-block;
+                    width: 50%;
+                    vertical-align: top;
+                    overflow: hidden;
+                    .list_networks-name {
+                        margin: 0;
+                        font-size: 12px;
+                        font-weight: bold;
+                        margin-bottom: 10px;
+                    }
+                }
+            }
+        }
     }
 }

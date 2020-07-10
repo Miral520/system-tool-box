@@ -78,7 +78,7 @@ export default<any> {
                 visible: false,
                 data: {
                     devName: {
-                        title: '项目',
+                        title: '',
                         value: '',
                     },
                     author: {

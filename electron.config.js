@@ -42,17 +42,34 @@ function createWindow () {
     let height = 300;
     if(arg.type === 'file') {
       if(arg.isMedia === 'pic') {
-        let size = screen.getPrimaryDisplay().workAreaSize;
-        width = 1440;
-        height = 900;
-        // if(arg.width >= arg.height) {
-        //   if(arg.width > size.width) {
+        let size = screenData.workAreaSize;
+        arg.height += 40; // 图像高度加上弹窗控制栏高度
+        if(arg.width <= size.width && arg.height <= size.height) { // 宽高小于等于屏幕宽高
+          width = arg.width > 180 ? arg.width : 180;
+          height = arg.height > 150 ? arg.height : 150;
+        }
+        else { // 宽高大于屏幕宽高
+          width = 1440;
+          height = 800;
+          // if(arg.width > size.width && arg.height > size.height) {
 
-        //   }
-        // }
-        // else {
+          // }
+          // else if(arg.width > size.width) {
 
-        // }
+          // }
+          // else if(arg.height > size.height) {
+            
+          // }
+
+          // if(arg.ratio >= 1) { // 宽大于等于高
+          //   let $width = size.width;
+          //   let $height = size.width / arg.ratio;
+          // }
+          // else { // 宽小于高
+          //   let $width = size.height * arg.ratio;
+          //   let height = size.height;
+          // }
+        }
       }
     }
     preview = new BrowserWindow({
@@ -84,9 +101,10 @@ function createWindow () {
     ipcMain.on('closePreview', (e, arg) => {
       preview.destroy();
     });
-    if(process.env.NODE_ENV === 'development') {
-      preview.webContents.openDevTools();
-    }
+    // 预览窗口的devtools
+    // if(process.env.NODE_ENV === 'development') {
+    //   preview.webContents.openDevTools();
+    // }
   });
 
   // 监听最小化
@@ -140,7 +158,8 @@ function createWindow () {
       EOL: os.EOL, // 操作系统特定的行末标志。在 POSIX 上是 \n。在 Windows 上是 \r\n。
       screen: screenData, // 屏幕尺寸
       about: { // 关于
-        name: process.env.npm_package_name, // 软件名
+        // name: process.env.npm_package_name,
+        name: 'Miral系统工具箱', // 软件名
         version: process.env.npm_package_version, // 版本号
         author: process.env.npm_package_author_name, // 作者
       },

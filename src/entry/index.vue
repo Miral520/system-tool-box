@@ -26,8 +26,8 @@
               <a-icon type="github" />
             </div>
             <ul class="about_text">
-              <li class="about_text-list" v-for="(item, key) in about.data" :key="key">
-                <span class="title">{{ item.title }}</span>
+              <li class="about_text-list" v-for="(item, key) in about.data" :key="key" :class="item.title ? '' : 'name'">
+                <span class="title" v-if="item.title">{{ item.title }}</span>
                 <span class="value">{{ item.value }}</span>
               </li>
             </ul>
