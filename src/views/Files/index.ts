@@ -121,6 +121,7 @@ export default {
                 closable: closable,
                 data: data,
             });
+            (<any>this).timeoutProview((<any>this).tabs);
         },
 
         // 切换缩略图和列表
@@ -136,6 +137,7 @@ export default {
         // 刷新
         refresh() {
             (<any>this).tabs[parseInt((<any>this).getTabCode((<any>this).activeURL))].data = (<any>this).loadFiles((<any>this).activeURL);
+            (<any>this).timeoutProview((<any>this).tabs);
         },
 
         // 向上
@@ -157,6 +159,7 @@ export default {
                     (<any>this).tabs[code].data = data;
                     (<any>this).activeURL = target;
                     (<any>this).inputURL = target;
+                    (<any>this).timeoutProview((<any>this).tabs);
                 }
             }
             else {
@@ -181,6 +184,7 @@ export default {
                     (<any>this).tabs[code].data = data;
                 }
                 (<any>this).activeURL = (<any>this).inputURL;
+                (<any>this).timeoutProview((<any>this).tabs);
             }
             else {
                 (<any>this).inputURL = (<any>this).activeURL;
@@ -206,6 +210,7 @@ export default {
                         (<any>this).tabs[code].label = file.name;
                         (<any>this).tabs[code].url = target;
                         (<any>this).tabs[code].data = (<any>this).loadFiles(target);
+                        (<any>this).timeoutProview((<any>this).tabs);
                     }
                     (<any>this).activeURL = target;
                     (<any>this).inputURL = target;
@@ -447,21 +452,21 @@ export default {
 
         // 设置缩略图
         setProload(data: any) {
-            (<any>this).tabs[data.tabIndex].data.lists[data.listIndex].proload = data.proload;
-            (<any>this).tabs[data.tabIndex].data.lists[data.listIndex].width = data.width;
-            (<any>this).tabs[data.tabIndex].data.lists[data.listIndex].height = data.height;
-            (<any>this).tabs[data.tabIndex].data.lists[data.listIndex].ratio = data.ratio;
+            if(data && data.proload && (<any>this).tabs[data.tabIndex].data.lists[data.listIndex]) {
+                (<any>this).tabs[data.tabIndex].data.lists[data.listIndex].proload = data.proload;
+                (<any>this).tabs[data.tabIndex].data.lists[data.listIndex].width = data.width;
+                (<any>this).tabs[data.tabIndex].data.lists[data.listIndex].height = data.height;
+                (<any>this).tabs[data.tabIndex].data.lists[data.listIndex].ratio = data.ratio;
+            }
         },
-    },
-    watch: {
-        tabs: {
-            // immediate: true,
-            deep: true,
-            handler(val: any) {
+
+        // 延迟设置缩略图
+        timeoutProview(data: any) {
+            if(data && data.length) {
                 clearTimeout((<any>this).loopTimer);
                 (<any>this).loopTimer = setTimeout(() => {
-                    (<any>this).setWorker(val, (data: any) => {
-                        (<any>this).setProload(data);
+                    (<any>this).setWorker(data, (r_d: any) => {
+                        (<any>this).setProload(r_d);
                     });
                 }, 500);
             }

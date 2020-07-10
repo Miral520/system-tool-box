@@ -24,7 +24,7 @@ const mapTabs = (tabs: any) => {
         tab.data.lists.forEach((file: any, index: any) => {
             if(file.isMedia === 'pic') {
                 (function(t_i, i) {
-                    setTimeout(() => {
+                    let timer = setTimeout(() => {
                         handlePreview(file.url).then((res: any) => {
                             ctx.postMessage({
                                 proview: {
@@ -36,6 +36,7 @@ const mapTabs = (tabs: any) => {
                                     ratio: res.ratio,
                                 },
                             });
+                            clearTimeout(timer);
                         });
                     }, (t_i + 1) * i * 20);
                 })(tabIndex, index);
@@ -43,11 +44,12 @@ const mapTabs = (tabs: any) => {
             else {
                 if(tabIndex === tabs.length - 1 && index === tab.data.lists.length - 1) {
                     (function(t_i, i) {
-                        setTimeout(() => {
+                        let timer = setTimeout(() => {
                             ctx.postMessage({
                                 lastThumb: true,
                             });
-                        }, (t_i + 1) * i * 20);
+                            clearTimeout(timer);
+                        }, (t_i + 1) * i * 50);
                     })(tabIndex, index);
                 }
             }
