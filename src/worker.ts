@@ -23,18 +23,33 @@ const mapTabs = (tabs: any) => {
     tabs.forEach((tab: any, tabIndex: any) => {
         tab.data.lists.forEach((file: any, index: any) => {
             if(file.isMedia === 'pic' && !file.proload) {
-                handlePreview(file.url).then((res: any) => {
-                    ctx.postMessage({
-                        proview: {
-                            proload: res.base64,
-                            tabIndex: tabIndex,
-                            listIndex: index,
-                            width: res.width,
-                            height: res.height,
-                            ratio: res.ratio,
-                        },
-                    });
-                });
+                (function(t_i, i) {
+                    setTimeout(() => {
+                        handlePreview(file.url).then((res: any) => {
+                            ctx.postMessage({
+                                proview: {
+                                    proload: res.base64,
+                                    tabIndex: tabIndex,
+                                    listIndex: index,
+                                    width: res.width,
+                                    height: res.height,
+                                    ratio: res.ratio,
+                                },
+                            });
+                        });
+                    }, (t_i + 1) * i * 20);
+                })(tabIndex, index);
+            }
+            else {
+                if(tabIndex === tabs.length - 1 && index === tab.data.lists.length - 1) {
+                    (function(t_i, i) {
+                        setTimeout(() => {
+                            ctx.postMessage({
+                                lastThumb: true,
+                            });
+                        }, (t_i + 1) * i * 20);
+                    })(tabIndex, index);
+                }
             }
         });
     });

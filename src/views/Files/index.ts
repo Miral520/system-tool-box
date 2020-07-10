@@ -420,6 +420,9 @@ export default {
 
         // 多线程
         setWorker(data: any, callback: Function) {
+            if((<any>this).worker) {
+                (<any>this).worker.terminate(); // 关闭主进程
+            }
             (<any>this).worker = new Worker();
             (<any>this).worker.postMessage({
                 tabs: data,
@@ -430,12 +433,14 @@ export default {
                     if(e.data.proview) {
                         if(callback) {
                             let timer = setTimeout(() => {
-                                clearTimeout(timer);
                                 callback(e.data.proview);
+                                clearTimeout(timer);
                             }, 0);
                         }
                     }
-                    // (<any>this).worker.terminate(); // 关闭主进程
+                    if(e.data.lastThumb) {
+                        (<any>this).worker.terminate(); // 关闭主进程
+                    }
                 }
             });
         },
