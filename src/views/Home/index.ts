@@ -176,7 +176,7 @@ export default {
     },
     watch: {
         sysInfo: {
-            // immediate: true,
+            immediate: true,
             // deep: true,
             handler(val: any) {
                 if((<any>this).timer) {
