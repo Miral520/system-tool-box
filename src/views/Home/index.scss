@@ -25,10 +25,6 @@
         .model {
             width: 100%;
             margin: 0;
-            margin-top: 20px;
-            &.no-top {
-                margin-top: 0;
-            }
             .cpu_layout {
                 margin-bottom: 15px;
                 .cpu_name {
@@ -93,10 +89,39 @@
                     width: 100%;
                     .list_desc-list {
                         width: 100%;
-                        margin-bottom: 10px;
+                        margin-bottom: 13px;
                         display: flex;
                         justify-content: space-between;
                         align-items: center;
+                    }
+                    .disk_layout {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        .disk-text, .disk-chart {
+                            height: 100%;
+                            overflow: hidden;
+                        }
+                        .disk-text {
+                            .disk_name, .disk_space {
+                                width: 100%;
+                                margin: 0;
+                                padding: 0;
+                            }
+                            .disk_name {
+                                font-size: 28px;
+                                color: #555;
+                                font-weight: bold;
+                                margin-bottom: 5px;
+                            }
+                            .disk_filesystem {
+                                margin-bottom: 5px;
+                            }
+                            .disk_space {
+                                font-size: 12px;
+                                color: #999;
+                            }
+                        }
                     }
                 }
             }

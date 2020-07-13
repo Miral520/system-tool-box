@@ -76,38 +76,18 @@ export default {
 
         // 读取本地分区
         getLocalDisk(error: Function) {
-            global.child_process.exec('wmic logicaldisk get caption', (err: any, stdout: any, stderr: any) => {
-                if(err || stderr) {
-                    if(error) {
-                        error();
+            (<any>this).$fn.getCMDInfo('logic_drive', (stdout: any) => {
+                stdout.forEach((item: any) => {
+                    let name = item[0] + global.path.sep;
+                    let data = (<any>this).loadFiles(name, false);
+                    if(data) {
+                        (<any>this).addTab(name, name, data, false);
                     }
-                }
-                else {
-                    let disk = stdout.split('\n');
-                    disk.forEach((item: any) => {
-                        let string = item.split('');
-                        let newArr = [];
-                        for (let i = 0; i < string.length; i++) {
-                            newArr.push(string[i]);
-                            if(string[i] === ':') {
-                                break;
-                            }
-                            if(i === string.length - 1) {
-                                newArr = [];
-                            }
-                        }
-                        
-                        if(newArr.length) {
-                            let name = newArr.join('') + global.path.sep;
-                            let data = (<any>this).loadFiles(name, false);
-                            if(data) {
-                                (<any>this).addTab(name, name, data, false);
-                            }
-                        }
-                    });
-                    (<any>this).activeURL = (<any>this).tabs[0].url;
-                    (<any>this).inputURL = (<any>this).tabs[0].url;
-                }
+                });
+                (<any>this).activeURL = (<any>this).tabs[0].url;
+                (<any>this).inputURL = (<any>this).tabs[0].url;
+            }, (err: any, stderr: any) => {
+                error(err, stderr);
             });
         },
 

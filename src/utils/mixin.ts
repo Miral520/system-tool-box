@@ -1,4 +1,5 @@
 import vars from './variables'
+declare var global: any;
 
 export default {
     // 获取地址栏参数
@@ -105,37 +106,81 @@ export default {
         }
     },
 
+    // 时间转换秒
     formatSeconds(value: any) { 
         let theTime: any = parseInt(value);// 需要转换的时间秒 
         let theTime1: any = 0;// 分 
         let theTime2: any = 0;// 小时 
         let theTime3: any = 0;// 天
         if(theTime > 60) { 
-         theTime1 = Math.ceil(theTime / 60); 
-         theTime = Math.ceil(theTime % 60); 
-         if(theTime1 > 60) { 
-          theTime2 = Math.ceil(theTime1 / 60); 
-          theTime1 = Math.ceil(theTime1 % 60); 
-          if(theTime2 > 24){
-           //大于24小时
-           theTime3 = Math.ceil(theTime2 / 24);
-           theTime2 = Math.ceil(theTime2 % 24);
-          }
-         } 
+            theTime1 = Math.ceil(theTime / 60); 
+            theTime = Math.ceil(theTime % 60); 
+        if(theTime1 > 60) { 
+            theTime2 = Math.ceil(theTime1 / 60); 
+            theTime1 = Math.ceil(theTime1 % 60); 
+        if(theTime2 > 24){ //大于24小时
+            theTime3 = Math.ceil(theTime2 / 24);
+            theTime2 = Math.ceil(theTime2 % 24);
+        }
+        } 
         } 
         let result = '';
         if(theTime > 0){
-         result = ` ${Math.ceil(theTime)}s`;
+            result = ` ${Math.ceil(theTime)}秒`;
         }
         if(theTime1 > 0) { 
-         result = ` ${Math.ceil(theTime1)}m${result}`; 
+            result = ` ${Math.ceil(theTime1)}分钟${result}`; 
         } 
         if(theTime2 > 0) { 
-         result = ` ${Math.ceil(theTime2)}h${result}`; 
+            result = ` ${Math.ceil(theTime2)}小时${result}`; 
         } 
         if(theTime3 > 0) { 
-         result = ` ${Math.ceil(theTime3)}d${result}`; 
+            result = ` ${Math.ceil(theTime3)}天${result}`; 
         }
         return result; 
-    }
+    },
+
+    // 从CMD获取信息
+    getCMDInfo(name: String = 'disk_drive', callback: Function, error: Function) {
+        let command = '';
+        if(name === 'disk_drive') { // 物理磁盘
+            command = 'wmic DISKDRIVE get Caption,size,InterfaceType';
+        }
+        else if(name === 'logic_drive') { // 逻辑盘符
+            command = 'wmic logicaldisk where "DriveType=3" get DeviceID,Size,FreeSpace,FileSystem';
+        }
+        else {
+            command = '';
+        }
+
+        if(command) {
+            global.child_process.exec(command, (err: any, stdout: any, stderr: any) => {
+                if(err || stderr) {
+                    if(error) {
+                        error(err, stderr);
+                    }
+                }
+                else {
+                    let reArr = [];
+                    let arr = stdout.split('\n');
+                    arr.splice(0, 1); // 删除表头
+                    for (let i = 0; i < arr.length; i++) {
+                        arr[i] = arr[i].trim();
+                        if(arr[i]) {
+                            let strArr = arr[i].split('  ');
+                            for (let index = strArr.length - 1; index >= 0; index--) {
+                                if(strArr[index] === '') {
+                                    strArr.splice(index, 1);
+                                }
+                            }
+                            reArr.push(strArr);
+                        }
+                    }
+                    if(callback) {
+                        callback(reArr);
+                    }
+                }
+            });
+        }
+    },
 }

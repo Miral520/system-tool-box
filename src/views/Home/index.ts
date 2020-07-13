@@ -21,14 +21,6 @@ export default {
                         value: '',
                     },
                 },
-                {
-                    title: '系统正常运行时间',
-                    value: '',
-                    suffix: {
-                        type: 'text',
-                        value: '',
-                    },
-                },
             ],
 
             // 滚动条配置
@@ -40,14 +32,58 @@ export default {
 
             // 是否显示ipv6
             showIPv6: false,
+
+            // 物理磁盘
+            diskDrive: [],
+
+            // 逻辑分区
+            logicDrive: [],
+
+            // 刷新定时器
+            timer: null,
         }
     },
     methods: {
+        // 获取今日
         getToday() {
             let date = new Date();
             let month = date.getMonth() + 1;
             let day = date.getDate();
             return `${date.getFullYear()}年${month > 9 ? month : '0' + month}月${day > 9 ? day : '0' + day}日`;
+        },
+
+        // 获取物理磁盘
+        getDiskDrive() {
+            (<any>this).diskDrive = [];
+            (<any>this).$fn.getCMDInfo('disk_drive', (stdout: any) => {
+                stdout.forEach((item: any) => {
+                    (<any>this).diskDrive.push({
+                        name: item[0],
+                        interface: item[1],
+                        size: (<any>this).$fn.setByte(item[2]),
+                    });
+                });
+            }, (err: any, stderr: any) => {
+                (<any>this).$message.error('获取物理磁盘失败！');
+            });
+        },
+
+        // 获取分区详细
+        getDiskDetail() {
+            (<any>this).logicDrive = [];
+            (<any>this).$fn.getCMDInfo('logic_drive', (stdout: any) => {
+                stdout.forEach((item: any) => {
+                    (<any>this).logicDrive.push({
+                        name: item[0].substring(0, item[0].length - 1),
+                        fileSystem: item[1],
+                        free: (<any>this).$fn.setByte(item[2]),
+                        total: (<any>this).$fn.setByte(item[3]),
+                        percent: (item[2] / item[3] * 100).toFixed(0),
+                    });
+                });
+            }, (err: any, stderr: any) => {
+                (<any>this).$message.error('获取分区失败！');
+            });
         },
     },
     computed: {
@@ -96,14 +132,13 @@ export default {
                         networkData.splice(i, 1);
                     }
                 }
-                (<any>this).statistic[2].value = (<any>this).$fn.formatSeconds(orgin.uptime);
                 let sysInfoData = {
                     hostname: orgin.hostname, // 主机名
                     user: {
                         homedir: orgin.userInfo.homedir,
                         username: orgin.userInfo.username,
                         tmpdir: orgin.tmpdir,
-                        uptime: (<any>this).statistic[2].value,
+                        uptime: (<any>this).$fn.formatSeconds(orgin.uptime),
                     },
                     memery: {
                         free: (<any>this).$fn.setByte(orgin.freemem),
@@ -124,8 +159,8 @@ export default {
                             label: orgin.screen.touchSupport === 'available' ? '可用' : (orgin.screen.touchSupport === 'unavailable' ? '不可用' : '未知'),
                             value: orgin.screen.touchSupport,
                         },
-                        width: orgin.screen.size.width, // 屏幕宽
-                        height: orgin.screen.size.height, // 屏幕高
+                        width: orgin.screen.size.width * orgin.screen.scaleFactor, // 屏幕宽
+                        height: orgin.screen.size.height * orgin.screen.scaleFactor, // 屏幕高
                         colorDepth: orgin.screen.colorDepth, // 色彩深度
                         colorSpace: colorSpaceData, // 色彩空间
                     },
@@ -136,6 +171,21 @@ export default {
                     networks: networkData,
                 };
                 return sysInfoData;
+            }
+        },
+    },
+    watch: {
+        sysInfo: {
+            // immediate: true,
+            // deep: true,
+            handler(val: any) {
+                if((<any>this).timer) {
+                    clearTimeout((<any>this).timer);
+                }
+                (<any>this).timer = setTimeout(() => {
+                    (<any>this).getDiskDrive();
+                    (<any>this).getDiskDetail();
+                }, 500);
             }
         },
     },
