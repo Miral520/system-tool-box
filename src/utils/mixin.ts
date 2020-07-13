@@ -1,3 +1,5 @@
+import vars from './variables'
+
 export default {
     // 获取地址栏参数
     getUrlSearch(name: string) {
@@ -91,5 +93,49 @@ export default {
     // 删除cookie
     removeCookie(cookieName: string) {
         document.cookie = `${encodeURIComponent(cookieName)}=; expires=${new Date()}`;
-    }, 
+    },
+
+    // 字节转换
+    setByte(size: any, unitCode: any = 0) {
+        if(size < 1024) {
+            return `${size}${vars.units[unitCode]}`;
+        }
+        else {
+            return (<any>this).setByte(Math.round(size / 1024 * 100) / 100, unitCode + 1);
+        }
+    },
+
+    formatSeconds(value: any) { 
+        let theTime: any = parseInt(value);// 需要转换的时间秒 
+        let theTime1: any = 0;// 分 
+        let theTime2: any = 0;// 小时 
+        let theTime3: any = 0;// 天
+        if(theTime > 60) { 
+         theTime1 = Math.ceil(theTime / 60); 
+         theTime = Math.ceil(theTime % 60); 
+         if(theTime1 > 60) { 
+          theTime2 = Math.ceil(theTime1 / 60); 
+          theTime1 = Math.ceil(theTime1 % 60); 
+          if(theTime2 > 24){
+           //大于24小时
+           theTime3 = Math.ceil(theTime2 / 24);
+           theTime2 = Math.ceil(theTime2 % 24);
+          }
+         } 
+        } 
+        let result = '';
+        if(theTime > 0){
+         result = ` ${Math.ceil(theTime)}s`;
+        }
+        if(theTime1 > 0) { 
+         result = ` ${Math.ceil(theTime1)}m${result}`; 
+        } 
+        if(theTime2 > 0) { 
+         result = ` ${Math.ceil(theTime2)}h${result}`; 
+        } 
+        if(theTime3 > 0) { 
+         result = ` ${Math.ceil(theTime3)}d${result}`; 
+        }
+        return result; 
+    }
 }

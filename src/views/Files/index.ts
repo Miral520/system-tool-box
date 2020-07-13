@@ -33,8 +33,6 @@ export default {
                 },
             },
 
-            units: ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB', 'BB'], // 单位
-
             picExt: ['jpg', 'jpeg', 'png'], // 图片扩展名
 
             videoExt: ['mp4'], // 视频扩展名
@@ -360,7 +358,7 @@ export default {
             if(type === 'file') {
                 try {
                     let data = global.fs.statSync(url);
-                    info.info = (<any>this).setByte(data.size);
+                    info.info = (<any>this).$fn.setByte(data.size);
                     info.type = 'file';
                 }
                 catch (error) {
@@ -378,16 +376,6 @@ export default {
                 }
             }
             return info;
-        },
-
-        // 字节转换
-        setByte(size: any, unitCode: any = 0) {
-            if(size < 1024) {
-                return `${size}${(<any>this).units[unitCode]}`;
-            }
-            else {
-                return (<any>this).setByte(Math.round(size / 1024 * 100) / 100, unitCode + 1);
-            }
         },
 
         // 标签变化
