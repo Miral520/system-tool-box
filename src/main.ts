@@ -8,6 +8,8 @@ import vuescroll from 'vuescroll';
 import 'ant-design-vue/dist/antd.css';
 import 'animate.css'
 
+declare var global: any;
+
 Vue.use(Antd);
 
 Vue.use(vuescroll, {
@@ -26,6 +28,24 @@ Vue.prototype.$fn = utils.mixin;
 Vue.prototype.$var = utils.vars;
 
 Vue.config.productionTip = false;
+
+// 存储本地分区
+global.ipcRenderer.on('disks', (event: any, message: any) => {
+  let disks: any = [];
+  message.forEach((disk: any) => {
+    if(disk._blocks) {
+      disks.push({
+        name: disk._mounted.substring(0, disk._mounted.length - 1),
+        total: Vue.prototype.$fn.setByte(disk._blocks),
+        used: Vue.prototype.$fn.setByte(disk._used),
+        free: Vue.prototype.$fn.setByte(disk._blocks),
+        fileSystem: '未知',
+        percent: parseFloat(disk._capacity),
+      });
+    }
+  });
+  store.commit('setdisksData', disks);
+});
 
 new Vue({
   router,

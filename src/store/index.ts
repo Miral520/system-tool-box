@@ -16,6 +16,9 @@ export default new Vuex.Store({
 
     // 显示底部
     showFooter: true,
+
+    // 逻辑分区
+    disks: [],
   },
   mutations: {
     // 设置面包屑
@@ -36,6 +39,11 @@ export default new Vuex.Store({
     // 设置底部
     setFooterDisplay(state: any, show: Boolean) {
       state.showFooter = show;
+    },
+
+    // 设置逻辑分区
+    setdisksData(state: any, data: any) {
+      state.disks = data;
     },
   },
   actions: {

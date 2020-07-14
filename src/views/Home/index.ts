@@ -40,10 +40,7 @@ export default {
             },
 
             // 逻辑分区
-            logicDrive: {
-                show: false,
-                data: [],
-            },
+            logicDrive: [],
 
             // 刷新定时器
             timer: null,
@@ -72,18 +69,16 @@ export default {
                 });
                 (<any>this).diskDrive.show = true;
             }, (err: any, stderr: any) => {
-                console.log(2);
                 (<any>this).diskDrive.show = false;
             });
         },
 
         // 获取分区详细
         getDiskDetail() {
-            (<any>this).logicDrive.show = false;
             (<any>this).$fn.getCMDInfo('logic_drive', (stdout: any) => {
-                (<any>this).logicDrive.data = [];
+                (<any>this).logicDrive = [];
                 stdout.forEach((item: any) => {
-                    (<any>this).logicDrive.data.push({
+                    (<any>this).logicDrive.push({
                         name: item[0].substring(0, item[0].length - 1),
                         fileSystem: item[1],
                         free: (<any>this).$fn.setByte(item[2]),
@@ -91,9 +86,9 @@ export default {
                         percent: (item[2] / item[3] * 100).toFixed(0),
                     });
                 });
-                (<any>this).logicDrive.show = true;
             }, (err: any, stderr: any) => {
-                (<any>this).logicDrive.show = false;
+                // wmic获取失败，即非windows平台使用插件获取，缺点是无法获取到文件系统
+                (<any>this).logicDrive = (<any>this).$store.state.disks;
             });
         },
     },

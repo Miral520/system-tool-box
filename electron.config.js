@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain, screen } = require('electron');
 const path = require('path');
 const os = require('os');
+const nodeDiskInfo = require('node-disk-info');
 
 const defaultSize = { // 窗口默认尺寸
   main: { // 主窗口
@@ -32,6 +33,21 @@ const defaultSize = { // 窗口默认尺寸
   
 };
 let screenData = null; // 屏幕数据
+
+// 获取逻辑分区信息
+function getLogicInfo(callback) {
+  nodeDiskInfo.getDiskInfo()
+  .then(disks => {
+      if(callback) {
+        callback(disks);
+      }
+  })
+  .catch(reason => {
+    if(callback) {
+      callback([]);
+    }
+  });
+};
 
 function createWindow () {
   const win = new BrowserWindow({
@@ -169,6 +185,9 @@ function createWindow () {
 
   // 传递操作系统信息
   win.webContents.on('did-finish-load', () => {
+    getLogicInfo(disks => {
+      win.webContents.send('disks', disks);
+    });
     win.webContents.send('sys', {
       type: os.type(), // 返回与 uname(3) 返回一样的操作系统名字。 例如，在 Linux 上返回 'Linux'，在 macOS 上返回 'Darwin'，在 Windows 上返回 'Windows_NT'。
       cpus: os.cpus(), // 返回一个对象数组，其中包含有关每个逻辑 CPU 内核的信息。

@@ -71,12 +71,14 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
         }
         .preview_main {
             max-width: 100%;
             max-height: 100%;
             width: auto;
             height: auto;
+            transition: all 0.1s ease-in-out;
         }
         .file_text {
             margin-left: 50px;
@@ -118,10 +120,31 @@
         </div>
     </div>
     <script>
+        var orginSize = 1;
+
+        //统一处理滚轮滚动事件
+        function wheel(event){
+            var delta = 0;
+            if(!event) {
+                event = window.event;
+            }
+            delta = event.wheelDelta / 120 * -1;
+
+            //上下滚动时的具体处理函数
+            if(delta) {
+                orginSize = orginSize - delta * 0.1;
+                if(orginSize < 0) {
+                    orginSize = 0;
+                }
+                document.getElementById('preMain').style.transform  = `scale(${orginSize})`
+            } 
+        }
+        
         window.onload = () => {
             global.ipcRenderer.on('preview', (event, message) => {
                 if(message.target.isMedia === 'pic') {
                     document.getElementById('preMain').src = message.target.url;
+                    document.getElementById('preLayout').addEventListener('mousewheel', wheel, false);
                 }
                 else {
                     document.getElementById('preLayout').style.display = 'none';
