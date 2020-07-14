@@ -35,7 +35,7 @@ global.ipcRenderer.on('disks', (event: any, message: any) => {
   message.forEach((disk: any) => {
     if(disk._blocks) {
       disks.push({
-        name: disk._mounted.substring(0, disk._mounted.length - 1),
+        name: disk._mounted,
         total: Vue.prototype.$fn.setByte(disk._blocks),
         used: Vue.prototype.$fn.setByte(disk._used),
         free: Vue.prototype.$fn.setByte(disk._blocks),

@@ -77,7 +77,10 @@ export default {
         // 读取本地分区
         getLocalDisk(error: Function) {
             (<any>this).$store.state.disks.forEach((disk: any) => {
-                let name = `${disk.name}:${global.path.sep}`;
+                let name = disk.name;
+                if(disk.name[disk.name.length - 1] !== global.path.sep) {
+                    name = `${disk.name}${global.path.sep}`;
+                }
                 let data = (<any>this).loadFiles(name, false);
                 if(data) {
                     (<any>this).addTab(name, name, data, false);
@@ -87,9 +90,11 @@ export default {
                 (<any>this).activeURL = (<any>this).tabs[0].url;
                 (<any>this).inputURL = (<any>this).tabs[0].url;
             }
-            // else {
-            //     error();
-            // }
+            else {
+                if(error) {
+                    error();
+                }
+            }
             // (<any>this).$fn.getCMDInfo('logic_drive', (stdout: any) => {
             //     stdout.forEach((item: any) => {
             //         let name = item[0] + global.path.sep;

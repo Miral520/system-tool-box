@@ -1,4 +1,5 @@
 declare var eStore: any;
+declare var global: any;
 
 export default {
     name: 'home',
@@ -88,7 +89,14 @@ export default {
                 });
             }, (err: any, stderr: any) => {
                 // wmic获取失败，即非windows平台使用插件获取，缺点是无法获取到文件系统
-                (<any>this).logicDrive = (<any>this).$store.state.disks;
+                let disks = JSON.parse(JSON.stringify((<any>this).$store.state.disks));
+                disks.forEach((disk: any) => {
+                    let name = disk.name;
+                    if(disk.name[disk.name.length - 1] !== global.path.sep) {
+                        name = `${disk.name}${global.path.sep}`;
+                    }
+                });
+                (<any>this).logicDrive = disks;
             });
         },
     },
