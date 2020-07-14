@@ -77,13 +77,26 @@ export default {
         // 读取本地分区
         getLocalDisk(error: Function) {
             (<any>this).$store.state.disks.forEach((disk: any) => {
-                let name = disk.name;
-                if(disk.name[disk.name.length - 1] !== global.path.sep) {
-                    name = `${disk.name}${global.path.sep}`;
+                let url = disk.name;
+                let label = disk.name;
+                if(disk.name[disk.name.length - 1] === global.path.sep) {
+                    label = global.path.sep;
                 }
-                let data = (<any>this).loadFiles(name, false);
+                else {
+                    let labelArr = disk.name.split(global.path.sep);
+                    let lastWord = labelArr[labelArr.length - 1];
+                    if(lastWord[lastWord.length - 1] === ':') {
+                        label = `${lastWord}${global.path.sep}`;
+                        url = label;
+                    }
+                    else {
+                        label = lastWord;
+                    }
+                }
+
+                let data = (<any>this).loadFiles(url, false);
                 if(data) {
-                    (<any>this).addTab(name, name, data, false);
+                    (<any>this).addTab(label, url, data, false);
                 }
             });
             if((<any>this).tabs.length) {
@@ -135,6 +148,10 @@ export default {
                     target += global.path.sep;
                     label += global.path.sep;
                 }
+                if(target === '') {
+                    target = global.path.sep;
+                    label = global.path.sep;
+                }
                 let data = (<any>this).loadFiles(target);
                 if(data) {
                     let code = (<any>this).getTabCode((<any>this).inputURL);
@@ -161,6 +178,10 @@ export default {
                 if((<any>this).inputURL[(<any>this).inputURL.length - 1] === ':') {
                     (<any>this).inputURL += global.path.sep;
                     label += global.path.sep;
+                }
+                if ((<any>this).inputURL === '') {
+                    label = global.path.sep;
+                    (<any>this).inputURL = global.path.sep;
                 }
                 if(code) {
                     (<any>this).tabs[code].label = label;

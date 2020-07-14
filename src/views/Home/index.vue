@@ -52,9 +52,9 @@
                       <a-col :span="8" v-for="(item, i) in logicDrive" :key="i">
                         <a-card style="width: 100%; border-radius: 5px; margin-bottom: 15px;" hoverable>
                           <div class="disk_layout">
-                            <div class="disk-text">
+                            <div class="disk-text" :title="item.name">
                               <p class="disk_name">{{ item.name }}</p>
-                              <a-tag color="blue" class="disk_filesystem">{{ item.fileSystem }}</a-tag>
+                              <a-tag color="blue" class="disk_filesystem" v-if="item.fileSystem !== '未知'">{{ item.fileSystem }}</a-tag>
                               <p class="disk_space">{{ item.free }} / {{ item.total }}</p>
                             </div>
                             <div class="disk-chart">

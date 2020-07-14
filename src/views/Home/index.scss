@@ -106,7 +106,8 @@
                             overflow: hidden;
                         }
                         .disk-text {
-                            width: calc(100% - 100px);
+                            width: calc(100% - 110px);
+                            margin-right: 10px;
                             .disk_name, .disk_space {
                                 width: 100%;
                                 margin: 0;
