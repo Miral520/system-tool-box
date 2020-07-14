@@ -20,9 +20,9 @@
         <p class="home_title">系统状况</p>
         <a-row :gutter="5" type="flex">
           <a-col :span="24">
-            <a-page-header title="存储" :sub-title="`${diskDrive.length}个物理磁盘`">
-              <template slot="tags">
-                <a-tag color="blue">{{ logicDrive.length }}个逻辑分区</a-tag>
+            <a-page-header title="存储" :sub-title="diskDrive.show ? `${diskDrive.data.length}个物理磁盘` : ''">
+              <template slot="tags" v-if="logicDrive.show">
+                <a-tag color="blue">{{ logicDrive.data.length }}个逻辑分区</a-tag>
               </template>
               <ul class="model">
                 <li class="list">
@@ -32,25 +32,25 @@
                   </div>
                   <a-progress :percent="100 - sysInfo.memery.percent" status="active" />
                 </li>
-                <li class="list">
+                <li class="list" v-if="diskDrive.show">
                   <div class="list_text">
                     <span class="list_name">硬盘</span>
                   </div>
                   <ul class="list_desc">
-                    <li class="list_desc-list" v-for="(item, i) in diskDrive" :key="i">
+                    <li class="list_desc-list" v-for="(item, i) in diskDrive.data" :key="i">
                       <span class="list_desc-list_name">{{ item.name }} / {{ item.interface }}</span>
                       <span class="list_desc-list_value">{{ item.size }}</span>
                     </li>
                   </ul>
                 </li>
-                <li class="list">
+                <li class="list" v-if="logicDrive.show">
                   <div class="list_text">
                     <span class="list_name">分区</span>
                   </div>
                   <div class="list_desc">
                     <a-row :gutter="15" type="flex">
-                      <a-col :span="8" v-for="(item, i) in logicDrive" :key="i">
-                        <a-card style="width: 100%; border-radius: 5px;" hoverable>
+                      <a-col :span="8" v-for="(item, i) in logicDrive.data" :key="i">
+                        <a-card style="width: 100%; border-radius: 5px; margin-bottom: 15px;" hoverable>
                           <div class="disk_layout">
                             <div class="disk-text">
                               <p class="disk_name">{{ item.name }}</p>

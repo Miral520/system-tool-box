@@ -1,5 +1,4 @@
 #app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background: transparent;
@@ -197,7 +196,7 @@
     
                 .ml_content-card {
                     box-sizing: border-box;
-                    padding: 15px 5px;
+                    padding: 15px 0;
                     overflow: hidden;
                     background: #fff;
                     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
@@ -205,8 +204,6 @@
                     border-radius: 3px;
                     @include full-layout;
                     .ml_content-main {
-                        box-sizing: border-box;
-                        padding: 0 25px;
                         @include full-layout;
                     }
                 }

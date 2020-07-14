@@ -2,14 +2,43 @@ const { app, BrowserWindow, ipcMain, screen } = require('electron');
 const path = require('path');
 const os = require('os');
 
+const defaultSize = { // 窗口默认尺寸
+  main: { // 主窗口
+    min: {
+      width: 310,
+      height: 345,
+    },
+    init: {
+      width: 1200,
+      height: 800,
+    },
+  },
+  preview: { // 预览窗口
+    min: {
+      width: 180,
+      height: 150,
+    },
+    init: {
+      width: 550,
+      height: 300,
+    },
+    large: {
+      width: 1200,
+      height: 800,
+    },
+    shawdow: 20,
+    titleBar: 40,
+  },
+  
+};
 let screenData = null; // 屏幕数据
 
 function createWindow () {
   const win = new BrowserWindow({
-    width: process.env.NODE_ENV === 'development' ? 1200 : 310,
-    height: process.env.NODE_ENV === 'development' ? 800 : 345,
-    minWidth: 310,
-    minHeight: 345,
+    width: process.env.NODE_ENV === 'development' ? defaultSize.main.init.width : defaultSize.main.min.width,
+    height: process.env.NODE_ENV === 'development' ? defaultSize.main.init.height : defaultSize.main.min.height,
+    minWidth: defaultSize.main.min.width,
+    minHeight: defaultSize.main.min.height,
     center: true,
     transparent: true,
     frame: false,
@@ -38,19 +67,20 @@ function createWindow () {
 
   // 监听新建预览窗口
   ipcMain.on('preview', (e, arg) => {
-    let width = 550;
-    let height = 300;
+    let width = defaultSize.preview.init.width;
+    let height = defaultSize.preview.init.height;
     if(arg.type === 'file') {
       if(arg.isMedia === 'pic') {
         let size = screenData.workAreaSize;
-        arg.height += 40; // 图像高度加上弹窗控制栏高度
+        arg.width += defaultSize.preview.shawdow; // 图像宽度加上padding
+        arg.height += (defaultSize.preview.shawdow + defaultSize.preview.titleBar); // 图像高度加上弹窗控制栏高度
         if(arg.width <= size.width && arg.height <= size.height) { // 宽高小于等于屏幕宽高
-          width = arg.width > 180 ? arg.width : 180;
-          height = arg.height > 150 ? arg.height : 150;
+          width = arg.width > defaultSize.preview.min.width ? arg.width : defaultSize.preview.min.width;
+          height = arg.height > defaultSize.preview.min.height ? arg.height : defaultSize.preview.min.height;
         }
         else { // 宽高大于屏幕宽高
-          width = 1440;
-          height = 800;
+          width = defaultSize.preview.large.width + defaultSize.preview.shawdow;
+          height = defaultSize.preview.large.height + defaultSize.preview.shawdow + defaultSize.preview.titleBar;
           // if(arg.width > size.width && arg.height > size.height) {
 
           // }
@@ -78,7 +108,7 @@ function createWindow () {
       frame: false,
       parent: win,
       center: true,
-      resizable: true,
+      resizable: false,
       hasShadow: true,
       transparent: true,
       webPreferences: {
@@ -127,13 +157,13 @@ function createWindow () {
   // 监听加载状态
   ipcMain.on('changeWinSize', (e, arg) => {
     let size = screenData.workAreaSize
-    let x = (size.width / 2) - 600;
-    let y = (size.height / 2) - 400;
+    let x = (size.width / 2) - (defaultSize.main.init.width / 2);
+    let y = (size.height / 2) - (defaultSize.main.init.height / 2);
     win.setContentBounds({
       x: x ? parseInt(x) : 10,
       y: y ? parseInt(y) : 10,
-      width: 1200,
-      height: 800,
+      width: defaultSize.main.init.width,
+      height: defaultSize.main.init.height,
     }, true);
   });
 

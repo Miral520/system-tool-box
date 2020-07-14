@@ -34,10 +34,16 @@ export default {
             showIPv6: false,
 
             // 物理磁盘
-            diskDrive: [],
+            diskDrive: {
+                show: false,
+                data: [],
+            },
 
             // 逻辑分区
-            logicDrive: [],
+            logicDrive: {
+                show: false,
+                data: [],
+            },
 
             // 刷新定时器
             timer: null,
@@ -54,26 +60,30 @@ export default {
 
         // 获取物理磁盘
         getDiskDrive() {
-            (<any>this).diskDrive = [];
+            (<any>this).diskDrive.show = false;
             (<any>this).$fn.getCMDInfo('disk_drive', (stdout: any) => {
+                (<any>this).diskDrive.data = [];
                 stdout.forEach((item: any) => {
-                    (<any>this).diskDrive.push({
+                    (<any>this).diskDrive.data.push({
                         name: item[0],
                         interface: item[1],
                         size: (<any>this).$fn.setByte(item[2]),
                     });
                 });
+                (<any>this).diskDrive.show = true;
             }, (err: any, stderr: any) => {
-                (<any>this).$message.error('获取物理磁盘失败！');
+                console.log(2);
+                (<any>this).diskDrive.show = false;
             });
         },
 
         // 获取分区详细
         getDiskDetail() {
-            (<any>this).logicDrive = [];
+            (<any>this).logicDrive.show = false;
             (<any>this).$fn.getCMDInfo('logic_drive', (stdout: any) => {
+                (<any>this).logicDrive.data = [];
                 stdout.forEach((item: any) => {
-                    (<any>this).logicDrive.push({
+                    (<any>this).logicDrive.data.push({
                         name: item[0].substring(0, item[0].length - 1),
                         fileSystem: item[1],
                         free: (<any>this).$fn.setByte(item[2]),
@@ -81,8 +91,9 @@ export default {
                         percent: (item[2] / item[3] * 100).toFixed(0),
                     });
                 });
+                (<any>this).logicDrive.show = true;
             }, (err: any, stderr: any) => {
-                (<any>this).$message.error('获取分区失败！');
+                (<any>this).logicDrive.show = false;
             });
         },
     },

@@ -2,6 +2,8 @@
     @include full-layout;
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
+    padding: 0 25px;
     .files_ctrl, .files_layout, .files_footer {
         width: 100%;
     }
