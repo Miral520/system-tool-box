@@ -95,19 +95,6 @@ export default {
                     error();
                 }
             }
-            // (<any>this).$fn.getCMDInfo('logic_drive', (stdout: any) => {
-            //     stdout.forEach((item: any) => {
-            //         let name = item[0] + global.path.sep;
-            //         let data = (<any>this).loadFiles(name, false);
-            //         if(data) {
-            //             (<any>this).addTab(name, name, data, false);
-            //         }
-            //     });
-            //     (<any>this).activeURL = (<any>this).tabs[0].url;
-            //     (<any>this).inputURL = (<any>this).tabs[0].url;
-            // }, (err: any, stderr: any) => {
-            //     error(err, stderr);
-            // });
         },
 
         // 添加tab
