@@ -1,7 +1,10 @@
-const { app, BrowserWindow, ipcMain, screen } = require('electron');
+const { app, BrowserWindow, ipcMain, screen, crashReporter } = require('electron');
 const path = require('path');
 const os = require('os');
 const nodeDiskInfo = require('node-disk-info');
+const { init } = (process.type === 'browser'
+  ? require('@sentry/electron/dist/main')
+  : require('@sentry/electron/dist/renderer'))
 
 const defaultSize = { // 窗口默认尺寸
   main: { // 主窗口
@@ -215,6 +218,26 @@ function createWindow () {
     });
   });
 };
+
+// 崩溃监听
+app.on('renderer-process-crashed', (event, webContents, killed) => {
+  console.log(event);
+  console.log('webContents: ' + webContents);
+  console.log('killed: ' + killed);
+});
+
+// 崩溃报告上报
+// 常规错误
+init({
+  dsn: 'https://bb1be0f6cde842fd9205d6c90d559f1d@o421172.ingest.sentry.io/5340517',
+});
+// 系统错误
+crashReporter.start({
+  companyName: 'Miral',
+  productName: 'Miral_Desktop_Tools_Box',
+  ignoreSystemCrashHandler: true,
+  submitURL: 'https://o421172.ingest.sentry.io/api/5340517/minidump/?sentry_key=bb1be0f6cde842fd9205d6c90d559f1d'
+});
 
 app.whenReady().then(() => {
   screenData = screen.getPrimaryDisplay();
