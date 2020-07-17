@@ -10,7 +10,9 @@
     "mac": "export NODE_ENV=production&&electron .",
     "mac_dev": "export NODE_ENV=development&&electron .",
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "start": "node ./launch.js",
+    "start_dev": "node ./launch.js dev"
   },
   "dependencies": {
     "@antv/g2plot": "^1.1.5",
