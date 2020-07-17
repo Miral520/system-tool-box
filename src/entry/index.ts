@@ -230,17 +230,4 @@ export default<any> {
             }
         },
     },
-    // computed: {
-    //     floatHide() {
-    //         return (<any>this).float.show;
-    //     },
-    // },
-    // watch: {
-    //     floatHide: {
-    //         // immediate: true,
-    //         handler(val: Boolean) {
-    //             eStore.set('floatHide', val);
-    //         }
-    //     },
-    // },
 }

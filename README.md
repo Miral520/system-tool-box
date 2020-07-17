@@ -11,7 +11,7 @@ npm install
 
 ### 尝试一下
 ```javascript
-npm run start // 成产环境
+npm run prod // 生产环境
 
-npm run start_dev // 开发环境
+npm run dev // 开发环境
 ```

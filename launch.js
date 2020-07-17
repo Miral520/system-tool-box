@@ -60,7 +60,7 @@ const serve = callback => {
         console.info('Serve closed!');
     }, error => {
         console.error(error);
-        process.exit(0);
+        process.exit(1);
     });
 }
 
@@ -76,7 +76,7 @@ const app = () => {
         process.exit(0);
     }, error => {
         console.error(error);
-        process.exit(0);
+        process.exit(1);
     });
 } 
 

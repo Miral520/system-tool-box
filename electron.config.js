@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, screen, crashReporter } = require('electron
 const path = require('path');
 const os = require('os');
 const nodeDiskInfo = require('node-disk-info');
+const profile = require('./profile.js');
 const { init } = (process.type === 'browser'
   ? require('@sentry/electron/dist/main')
   : require('@sentry/electron/dist/renderer'))
@@ -211,9 +212,11 @@ function createWindow () {
       screen: screenData, // 屏幕尺寸
       about: { // 关于
         // name: process.env.npm_package_name,
-        name: 'Miral系统工具箱', // 软件名
+        name: profile.name,
+        alias: profile.alias,
         version: process.env.npm_package_version, // 版本号
-        author: process.env.npm_package_author_name, // 作者
+        // author: process.env.npm_package_author_name,
+        author: profile.author,
       },
     });
   });
@@ -233,8 +236,8 @@ init({
 });
 // 系统错误
 crashReporter.start({
-  companyName: 'Miral',
-  productName: 'Miral_Desktop_Tools_Box',
+  companyName: profile.author,
+  productName: profile.alias,
   ignoreSystemCrashHandler: true,
   submitURL: 'https://o421172.ingest.sentry.io/api/5340517/minidump/?sentry_key=bb1be0f6cde842fd9205d6c90d559f1d'
 });
