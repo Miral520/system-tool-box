@@ -1,27 +1,27 @@
 const path = require('path');
 const { spawn } = require('child_process');
-const cwd = path.resolve(__dirname, './');
 const isWin = process.platform === 'win32';
 const command = isWin ? 'npm.cmd' : 'npm';
-const baseArgs = ['run'];
-const argv = process.argv;
 const suffix = isWin ? 'win' : 'mac';
-const param = argv[2] ? `${suffix}_dev` : suffix;
+const param = process.argv[2] ? `${suffix}_dev` : suffix;
+const cwd = path.resolve(__dirname, './');
+const baseArgs = ['run'];
+const stringType = 'utf-8';
 
-const run = (args, stdout, stderr, close, error) => {
+const main = (args, stdout, stderr, close, error) => {
     let process = spawn(command, args, {
         cwd: cwd,
     });
 
     process.stdout.on('data', data => {
         if(stdout) {
-            stdout(data.toString('utf-8'));
+            stdout(data.toString(stringType));
         }
     });
 
     process.stderr.on('data', data => {
         if(stderr) {
-            stderr(data.toString('utf-8'));
+            stderr(data.toString(stringType));
         }
     });
 
@@ -33,7 +33,7 @@ const run = (args, stdout, stderr, close, error) => {
     
     process.on('error', err => {
         if(error) {
-            error(err.toString('utf-8'));
+            error(err.toString(stringType));
         }
     });
 
@@ -44,8 +44,8 @@ const serve = callback => {
     const args = baseArgs.concat(['serve']);
     const stdoutStr = 'To create a production build, run npm run build.';
     const stderrStr = '<s> [webpack.Progress] ';
-    return run(args, stdout => {
-        if(stdout.toString('utf-8').indexOf(stdoutStr) > -1) {
+    return main(args, stdout => {
+        if(stdout.toString(stringType).indexOf(stdoutStr) > -1) {
             console.info('Serve done!');
             if(callback) {
                 callback();
@@ -66,7 +66,7 @@ const serve = callback => {
 
 const app = () => {
     const args = baseArgs.concat([param]);
-    return run(args, stdout => {
+    return main(args, stdout => {
         console.info(stdout);
     }, stderr => {
         console.info(stderr);
