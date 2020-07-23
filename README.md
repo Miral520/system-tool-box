@@ -1,4 +1,4 @@
-# vue_electron
+# Miral系统工具箱
 
 ### 介绍
 ##### 结合Electron和Vue开发PC端和Mac端的工具箱<br/><br/>
@@ -15,3 +15,4 @@ npm run prod // 生产环境
 
 npm run dev // 开发环境
 ```
+或直接执行文件下bin.bat文件(Windows系统下有效)
