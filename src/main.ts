@@ -9,6 +9,7 @@ import 'ant-design-vue/dist/antd.css';
 import 'animate.css'
 
 declare var global: any;
+declare var eStore: any;
 
 Vue.use(Antd);
 
@@ -46,6 +47,9 @@ global.ipcRenderer.on('disks', (event: any, message: any) => {
   });
   store.commit('setdisksData', disks);
 });
+
+// 从本地获取用户设置
+store.commit('setConfig', eStore.get('config') ? eStore.get('config') : {});
 
 new Vue({
   router,

@@ -7,13 +7,19 @@ $head-handle_border-red: #e55c50;
 $head-handle_border-yellow: #eab141;
 $head-handle_border-green: #30b742;
 
-// 图标背景
-$head-icon-bg: #555;
+// 主色
+$main-color: #1890ff;
 
 // light
-$border-line_light: #e0e0e0;
-$head-bg_light: #f6f6f6;
-$main-bg_light: #fff;
-$main-color: #52affc;
+$border_outline_light: #e8e8e8;
+$frame_light: #fff;
+$bg_light: #eff1f4;
+$border_inner_light: #e8e8e8;
+$text_color_light: rgba(0, 0, 0, 0.65);
 
 // dark
+$border_outline_dark: #636365;
+$frame_dark: #3f3e41;
+$bg_dark: #302f34;
+$border_inner_dark: #1a191c;
+$text_color_dark: #fff;

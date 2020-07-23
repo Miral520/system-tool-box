@@ -19,6 +19,12 @@ export default new Vuex.Store({
 
     // 逻辑分区
     disks: [],
+
+    // 临时存储用户设置
+    config: {},
+
+    // 主题
+    theme: 'light',
   },
   mutations: {
     // 设置面包屑
@@ -44,6 +50,16 @@ export default new Vuex.Store({
     // 设置逻辑分区
     setdisksData(state: any, data: any) {
       state.disks = data;
+    },
+
+    // 设置临时存储用户设置
+    setConfig(state: any, data: any) {
+      state.config = data;
+    },
+
+    // 设置主题
+    setTheme(state: any, data: any) {
+      state.theme = data;
     },
   },
   actions: {

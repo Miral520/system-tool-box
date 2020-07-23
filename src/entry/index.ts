@@ -25,7 +25,6 @@ export default<any> {
             // 退出确认
             float: {
                 visible: false,
-                show: !eStore.get('floatHide'),
             },
 
             // 设置
@@ -33,9 +32,35 @@ export default<any> {
                 visible: false,
                 config: {
                     floatHide: {
-                        title: '隐藏退出确认',
+                        title: '隐藏退出询问',
                         type: 'switch',
-                        value: eStore.get('floatHide'),
+                        value: false,
+                    },
+                    theme: {
+                        title: '选择界面主题',
+                        type: 'radio-group',
+                        full:  true,
+                        props: {
+                            defaultValue: 'light',
+                        },
+                        childCpt: { 
+                            type: 'radio',
+                            option: [
+                                {
+                                    label: '浅色主题',
+                                    value: 'light',
+                                },
+                                {
+                                    label: '深色主题',
+                                    value: 'dark',
+                                },
+                                {
+                                    label: '跟随系统',
+                                    value: 'auto',
+                                },
+                            ],
+                        },
+                        value: 'light',
                     },
                 },
             },
@@ -94,22 +119,27 @@ export default<any> {
 
             // 开发模式
             mode: '',
+
+            // 当前系统主题为暗色主题
+            sysIsDark: false,
         }
     },
     created() {
-        this.init();
+        (<any>this).init();
 
-        this.getOsType();
+        (<any>this).getOsType();
 
-        this.$nextTick(() => {
-            this.loadApp(this.launchApp);
+        (<any>this).$nextTick(() => {
+            (<any>this).loadApp((<any>this).launchApp);
         });
 
-        this.calcRunTime();
+        (<any>this).calcRunTime();
     },
     methods: {
         // 初始化
         init() {
+            (<any>this).setTheme(true);
+            (<any>this).getSysTheme();
             (<any>this).mode = (<any>this).$fn.getUrlSearch('mode') === 'prod' ? 'prod' : 'dev';
             if((<any>this).mode === 'dev') {
                 (<any>this).$store.commit('setMode', (<any>this).mode);
@@ -120,6 +150,31 @@ export default<any> {
         // dom执行方法
         runFn(name: any) {
             (<any>this)[name]();
+        },
+
+        // 设置主题
+        setTheme(first: Boolean = false) {
+            let config = first ? (<any>this).$store.state.config : {};
+            for (const key in (<any>this).setting.config) {
+                if(first) {
+                    if (Object.prototype.hasOwnProperty.call(config, key)) {
+                        (<any>this).setting.config[key].value = (<any>this).$store.state.config[key];
+                    }
+                    else {
+                        config[key] = (<any>this).setting.config[key].value;
+                    }
+                }
+                else {
+                    config[key] = (<any>this).setting.config[key].value;
+                }
+            }
+            (<any>this).$fn.saveProfile('config', config);
+            if(config.theme === 'auto') {
+                (<any>this).$store.commit('setTheme', (<any>this).sysIsDark ? 'dark' : 'light');
+            }
+            else {
+                (<any>this).$store.commit('setTheme', config.theme);
+            }
         },
 
         // 关于
@@ -135,45 +190,41 @@ export default<any> {
         // 设置
         handleSetting() {
             for (const key in (<any>this).setting.config) {
-                (<any>this).setting.config[key].value = eStore.get(key);
+                (<any>this).setting.config[key].value = (<any>this).config[key];
             }
             (<any>this).setting.visible = !(<any>this).setting.visible;
         },
 
         // 设置确定
         confirmSetting() {
-            for (const key in (<any>this).setting.config) {
-                eStore.set(key, (<any>this).setting.config[key].value);
-            }
+            (<any>this).setTheme(false);
             (<any>this).setting.visible = false;
         },
 
         // 关闭提示
         closeFloatHandle() {
-            (<any>this).float.show = !eStore.get('floatHide');
-            if((<any>this).float.show) {
-                // (this as any).float.visible = true;
-                (<any>this).float.visible = true;
+            if((<any>this).config.floatHide) {
+                this.closeHandle();
             }
             else {
-                this.closeHandle();
+                (<any>this).float.visible = true;
             }
         },
 
         // 关闭程序
         closeHandle() {
-            eStore.set('floatHide', !(<any>this).float.show);
+            (<any>this).confirmSetting();
             global.app.exit();
         },
 
         // 取消关闭
         cancelHandle() {
-            (<any>this).float.show = true;
+            (<any>this).setting.config.floatHide.value = false;
         },
 
         // 监听checkbox
         nextBoxHandle(e: any) {
-            (<any>this).float.show = !e.target.checked;
+            (<any>this).setting.config.floatHide.value = e.target.checked;
         },
 
         // 最小化
@@ -192,6 +243,19 @@ export default<any> {
             global.ipcRenderer.on('sys', (event: any, message: any) => {
                 (<any>this).$store.commit('setSys', message);
                 (<any>this).footer.text = `${message.about.name} ©${new Date().getFullYear()} Created by ${message.about.author}`;
+
+                // macOS下添加主题跟随系统选项
+                // (<any>this).setting.config.theme.childCpt.option[2].disable = message.platform === 'darwin' ? false : true;
+            });
+        },
+
+        // 监听系统主题状态
+        getSysTheme() {
+            global.ipcRenderer.on('nativeTheme', (event: any, message: any) => {
+                (<any>this).sysIsDark = message.shouldUseDarkColors;
+                if((<any>this).$store.state.config.theme && (<any>this).$store.state.config.theme === 'auto') {
+                    (<any>this).$store.commit('setTheme', message.shouldUseDarkColors ? 'dark' : 'light');
+                }
             });
         },
 
@@ -228,6 +292,17 @@ export default<any> {
             else {
                 eStore.set('runTime', 1);
             }
+        },
+    },
+    computed: {
+        // 设置
+        config() {
+            return (<any>this).$store.state.config;
+        },
+
+        // 主题
+        theme() {
+            return (<any>this).$store.state.theme;
         },
     },
 }

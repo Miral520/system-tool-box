@@ -1,7 +1,15 @@
 import vars from './variables'
+import store from 'store'
 declare var global: any;
+declare var eStore: any;
 
 export default {
+    // 保存数据
+    saveProfile(key: any, data: any) {
+        store.commit(`set${key.length > 1 ? `${key[0].toUpperCase()}${key.substr(1)}` : key[0].toUpperCase()}`, data);
+        eStore.set(key, data);
+    },
+
     // 获取地址栏参数
     getUrlSearch(name: string) {
         // 未传参，返回空

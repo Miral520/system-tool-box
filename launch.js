@@ -64,9 +64,9 @@ const serve = callback => {
     });
 }
 
-const app = () => {
+let launch = serve(() => {
     const args = baseArgs.concat([param]);
-    return main(args, stdout => {
+    main(args, stdout => {
         console.info(stdout);
     }, stderr => {
         console.info(stderr);
@@ -78,6 +78,4 @@ const app = () => {
         console.error(error);
         process.exit(1);
     });
-} 
-
-let launch = serve(app);
+});

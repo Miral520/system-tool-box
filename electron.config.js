@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, screen, crashReporter } = require('electron');
+const { app, BrowserWindow, ipcMain, screen, crashReporter, nativeTheme } = require('electron');
 const path = require('path');
 const os = require('os');
 const nodeDiskInfo = require('node-disk-info');
@@ -37,6 +37,8 @@ const defaultSize = { // 窗口默认尺寸
   
 };
 let screenData = null; // 屏幕数据
+let win = null; // 主窗口
+let preview = null; // 预览窗口
 
 // 获取逻辑分区信息
 function getLogicInfo(callback) {
@@ -54,7 +56,7 @@ function getLogicInfo(callback) {
 };
 
 function createWindow () {
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     width: process.env.NODE_ENV === 'development' ? defaultSize.main.init.width : defaultSize.main.min.width,
     height: process.env.NODE_ENV === 'development' ? defaultSize.main.init.height : defaultSize.main.min.height,
     minWidth: defaultSize.main.min.width,
@@ -189,9 +191,34 @@ function createWindow () {
 
   // 传递操作系统信息
   win.webContents.on('did-finish-load', () => {
+    // 监听系统主题变化
+    nativeTheme.on('updated', () => {
+      let data = {
+        shouldUseDarkColors: nativeTheme.shouldUseDarkColors,
+        themeSource: nativeTheme.themeSource,
+        shouldUseHighContrastColors: nativeTheme.shouldUseHighContrastColors,
+        shouldUseInvertedColorScheme: nativeTheme.shouldUseInvertedColorScheme,
+      };
+      win.webContents.send('nativeTheme', data);
+      if(preview) {
+        preview.webContents.send('nativeTheme', data);
+      }
+    });
+
+    // 初始化主题
+    win.webContents.send('nativeTheme', {
+      shouldUseDarkColors: nativeTheme.shouldUseDarkColors,
+      themeSource: nativeTheme.themeSource,
+      shouldUseHighContrastColors: nativeTheme.shouldUseHighContrastColors,
+      shouldUseInvertedColorScheme: nativeTheme.shouldUseInvertedColorScheme,
+    });
+
+    // 磁盘信息
     getLogicInfo(disks => {
       win.webContents.send('disks', disks);
     });
+
+    // 系统信息
     win.webContents.send('sys', {
       type: os.type(), // 返回与 uname(3) 返回一样的操作系统名字。 例如，在 Linux 上返回 'Linux'，在 macOS 上返回 'Darwin'，在 Windows 上返回 'Windows_NT'。
       cpus: os.cpus(), // 返回一个对象数组，其中包含有关每个逻辑 CPU 内核的信息。
@@ -244,7 +271,6 @@ crashReporter.start({
 
 app.whenReady().then(() => {
   screenData = screen.getPrimaryDisplay();
-  
   createWindow();
 });
 

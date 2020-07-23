@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" :class="theme">
     <transition name="custom-classes-transition" :duration="{ enter: 2000, leave: 2000 }" enter-active-class="animate__animated animate__fadeIn" leave-active-class="animate__animated animate__fadeOut">
       <!-- loading -->
       <div class="ml_loading" v-if="loadingWin.show" key="loading">
@@ -12,15 +12,15 @@
       <!-- 主内容 -->
       <div class="ml_frame" :class="isFullscreen ? '' : 'hasShadow'" key="main" v-else>
         <!-- 关闭提示 -->
-        <a-modal v-model="float.visible" wrapClassName="modal_shawdo" :closable="false" :mask="false" title="确认关闭" okText="确定" cancelText="取消" @ok="closeHandle" @cancel="cancelHandle" centered>
+        <a-modal v-model="float.visible" wrapClassName="modal_shadow" :closable="false" :mask="false" title="确认关闭" okText="确定" cancelText="取消" @ok="closeHandle" @cancel="cancelHandle" centered>
           <p class="ml_float-text">是否要关闭应用程序？</p>
           <div class="ml_float-checkbox">
-            <a-checkbox :checked="!float.show" @change="nextBoxHandle">不再显示</a-checkbox>
+            <a-checkbox :checked="setting.config.floatHide.value" @change="nextBoxHandle">不再显示</a-checkbox>
           </div>
         </a-modal>
 
         <!-- 关于 -->
-        <a-modal v-model="about.visible" wrapClassName="modal_shawdo" :closable="false" title="关于" width="400px" :mask="false" destroyOnClose centered>
+        <a-modal v-model="about.visible" wrapClassName="modal_shadow" :closable="false" title="关于" width="400px" :mask="false" destroyOnClose centered>
           <div class="about_layout">
             <div class="about_pic">
               <a-icon type="github" />
@@ -38,12 +38,18 @@
         </a-modal>
 
         <!-- 设置 -->
-        <a-modal v-model="setting.visible" wrapClassName="modal_shawdo" :closable="false" title="设置" width="500px" :mask="false" okText="确定" cancelText="取消" @ok="confirmSetting" destroyOnClose centered>
+        <a-modal v-model="setting.visible" wrapClassName="modal_shadow" :closable="false" title="设置" width="600px" :mask="false" okText="确定" cancelText="取消" @ok="confirmSetting" destroyOnClose centered>
           <div class="setting_layout">
             <ul class="setting_warp">
-              <li class="setting_list" v-for="(item, key) in setting.config" :key="key">
+              <li class="setting_list" v-for="(item, key) in setting.config" :key="key" :class="item.full ? 'full' : ''">
                 <span class="setting_title">{{ item.title }}</span>
-                <a-switch v-if="item.type === 'switch'" v-model="item.value" />
+                <div class="setting_value">
+                  <component :is="`a-${item.type}`" v-model="item.value" v-bind="item.props">
+                    <template v-if="item.childCpt">
+                      <component :is="`a-${item.childCpt.type}`" v-for="(opt, optIndex) in item.childCpt.option" :key="optIndex" :value="opt.value" v-show="!opt.disable">{{ opt.label }}</component>
+                    </template>
+                  </component>
+                </div>
               </li>
             </ul>
           </div>
@@ -70,14 +76,14 @@
               </li>
             </ul>
             <div class="ml_header-right">
-              <a-dropdown overlayClassName="setting_menu">
+              <a-dropdown overlayClassName="setting_menu" :trigger="['click']">
                 <a-badge :dot="settingData.hasMsg">
                   <a class="ml_header-right_setting" @click="e => e.preventDefault()">
                     <a-icon type="appstore" />
                   </a>
                 </a-badge>
                 <a-card class="setting_menu-layout" slot="overlay">
-                  <a-menu>
+                  <a-menu :class="theme">
                     <a-menu-item v-for="(item, index) in settingData.menu" :key="`public_${index}`">
                       <a href="javascript:void(0)" @click="runFn(item.fn)">
                         <a-badge :dot="item.hasMsg">
