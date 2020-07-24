@@ -74,36 +74,68 @@ export default {
 
         // 删除
         delFile(data: any) {
-            let $this = (<any>this);
+            const $this = (<any>this);
+            const h = $this.$createElement;
+            const confirm = h('div', {
+                style: 'margin-top: 5px;',
+            }, [
+                h('p', {
+                    style: 'margin-bottom: 10px;',
+                }, `您确定要删除文件 ${data.name} 吗？`),
+                h('span', {
+                    style: 'font-size: 12px;',
+                }, `永久删除`),
+                h('a-switch', {
+                    style: 'margin-left: 5px;', 
+                    props: {
+                        size: 'small',
+                        'default-checked': false,
+                    },
+                }),
+            ]);
             $this.$confirm({
                 title: '确定删除？',
-                content: `您确定要永久删除文件 ${data.name} 吗？`,
+                // content: `您确定要永久删除文件 ${data.name} 吗？`,
+                content: confirm,
                 okText: '确认',
                 cancelText: '取消',
                 okType: 'danger',
                 centered: true,
                 onOk() {
-                    return new Promise((resolve: any, reject: any) => {
-                        global.fs.unlink(data.url, (err: any) => {
-                            if (err) {
-                                $this.$message.error(err);
-                                reject();
-                                return false;
-                            }
-                            else {
-                                $this.$message.success('删除成功！');
-                                $this.refresh();
-                                resolve();
-                            }
-                        });
-                    }).then((resolve: any) => {}, (reject: any) => {});
+                    if(confirm.children[2].elm.ariaChecked) {
+                        // 直接删除，不移入回收站
+                        return new Promise((resolve: any, reject: any) => {
+                            global.fs.unlink(data.url, (err: any) => {
+                                if (err) {
+                                    $this.$message.error(err);
+                                    reject();
+                                    return false;
+                                }
+                                else {
+                                    $this.$message.success('删除成功！');
+                                    $this.refresh();
+                                    resolve();
+                                }
+                            });
+                        }).then((resolve: any) => {}, (reject: any) => {});
+                    }
+                    else {
+                        let success = global.shell.moveItemToTrash(data.url);
+                        if(success) {
+                            $this.$message.success('删除成功！');
+                            $this.refresh();
+                        }
+                        else {
+                            $this.$message.error('删除失败！');
+                        }
+                    }
                 },
             });
         },
 
         // 重命名
         reName(data: any) {
-            let $this = (<any>this);
+            const $this = (<any>this);
             const input = $this.$createElement('a-input', {
                 style: 'margin-top: 5px;', 
                 props: {
@@ -337,12 +369,13 @@ export default {
                     (<any>this).inputURL = target;
                 }
                 else {
-                    if(file.isImage) {
+                    // if(file.isImage) {
 
-                    }
-                    else {
+                    // }
+                    // else {
 
-                    }
+                    // }
+                    global.shell.openExternal(`file://${file.url}`);
                 }
             }
         },
