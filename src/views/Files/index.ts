@@ -74,32 +74,102 @@ export default {
 
         // 删除
         delFile(data: any) {
-            (<any>this).$confirm({
+            let $this = (<any>this);
+            $this.$confirm({
                 title: '确定删除？',
                 content: `您确定要永久删除文件 ${data.name} 吗？`,
                 okText: '确认',
                 cancelText: '取消',
+                okType: 'danger',
+                centered: true,
                 onOk() {
-                    global.fs.unlink(data.url, (err: any) => {
-                        if (err) {
-                            (<any>this).$message.error(err);
-                            return false;
-                        }
-                        else {
-                            (<any>this).$message.success('删除成功！');
-                            (<any>this).refresh();
-                        }
-                    });
+                    return new Promise((resolve: any, reject: any) => {
+                        global.fs.unlink(data.url, (err: any) => {
+                            if (err) {
+                                $this.$message.error(err);
+                                reject();
+                                return false;
+                            }
+                            else {
+                                $this.$message.success('删除成功！');
+                                $this.refresh();
+                                resolve();
+                            }
+                        });
+                    }).then((resolve: any) => {}, (reject: any) => {});
                 },
-                // onCancel() {
-
-                // },
             });
         },
 
         // 重命名
         reName(data: any) {
-            console.log(data);
+            let $this = (<any>this);
+            const input = $this.$createElement('a-input', {
+                style: 'margin-top: 5px;', 
+                props: {
+                    value: data.name,
+                },
+                attrs: {
+                    spellcheck: false,
+                },
+                domProps: {
+
+                },
+            });
+            $this.$confirm({
+                title: '文件重命名',
+                content: input,
+                okText: '确认',
+                cancelText: '取消',
+                centered: true,
+                onOk() {
+                    let result = input.elm.value.trim();
+                    return new Promise((resolve: any, reject: any) => {
+                        if(result !== data.name) {
+                            if(result === '') {
+                                $this.$message.error('文件名不能为空！');
+                                reject();
+                            }
+                            else {
+                                let canReName = true;
+                                for (let tabIndex = 0; tabIndex < $this.tabs.length; tabIndex++) {
+                                    if($this.tabs[tabIndex].url === $this.inputURL) {
+                                        for (let i = 0; i < $this.tabs[tabIndex].data.lists.length; i++) {
+                                            let file = $this.tabs[tabIndex].data.lists[i];
+                                            if(file.name === result) {
+                                                canReName = false;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    break;
+                                }
+                                if(canReName) {
+                                    global.fs.rename(data.url, `${data.url.substring(0, data.url.lastIndexOf(data.name))}${result}`, (err: any) => {
+                                        if (err) {
+                                            $this.$message.error(err);
+                                            reject();
+                                            return false;
+                                        }
+                                        else {
+                                            $this.$message.success('文件重命名成功！');
+                                            $this.refresh();
+                                            resolve();
+                                        }
+                                    });
+                                }
+                                else {
+                                    $this.$message.error('文件名已重复！');
+                                    reject();
+                                }
+                            }
+                        }
+                        else {
+                            resolve();
+                        }
+                    }).then((resolve: any) => {}, (reject: any) => {});
+                },
+            });
         },
 
         // 初始化
