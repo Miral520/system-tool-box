@@ -59,7 +59,16 @@ export default {
                     label: '重命名',
                     fn: 'reName',
                 },
+                showExplore: {
+                    label: `在 ${(<any>this).$store.state.sysInfo.platform === 'win32' ? '资源管理器' : 'Finder'} 中显示`,
+                    fn: 'setShow',
+                },
             },
+
+            debounce: { // 操作防抖
+                timer: null,
+                canDo: true,
+            }, 
         }
     },
     created() {
@@ -70,6 +79,11 @@ export default {
         // 菜单方法重定向
         setMenuMethod(menu: any, data: any) {
             (<any>this)[menu.fn](data);
+        },
+
+        // 资源管理器中显示文件
+        setShow(data: any) {
+            global.shell.showItemInFolder(data.url);
         },
 
         // 删除
@@ -95,12 +109,13 @@ export default {
             ]);
             $this.$confirm({
                 title: '确定删除？',
-                // content: `您确定要永久删除文件 ${data.name} 吗？`,
                 content: confirm,
                 okText: '确认',
                 cancelText: '取消',
                 okType: 'danger',
                 centered: true,
+                mask: false,
+                maskClosable: true,
                 onOk() {
                     if(confirm.children[2].elm.ariaChecked) {
                         // 直接删除，不移入回收站
@@ -154,6 +169,8 @@ export default {
                 okText: '确认',
                 cancelText: '取消',
                 centered: true,
+                mask: false,
+                maskClosable: true,
                 onOk() {
                     let result = input.elm.value.trim();
                     return new Promise((resolve: any, reject: any) => {
@@ -346,35 +363,40 @@ export default {
 
         // 点击文件
         openFile(file: any) {
-            if(file.desc === '无访问权限') {
+            if (file.desc === '无访问权限') {
                 (<any>this).$message.warning('无访问权限');
             }
             else {
                 let target = '';
-                if((<any>this).activeURL[(<any>this).activeURL.length - 1] === global.path.sep) {
+                if ((<any>this).activeURL[(<any>this).activeURL.length - 1] === global.path.sep) {
                     target = `${(<any>this).activeURL}${file.name}`;
                 }
                 else {
                     target = `${(<any>this).activeURL}${global.path.sep}${file.name}`;
                 }
-                if(file.type === 'folder') {
-                    let code = (<any>this).getTabCode((<any>this).activeURL);
-                    if(code) {
-                        (<any>this).tabs[code].label = file.name;
-                        (<any>this).tabs[code].url = target;
-                        (<any>this).tabs[code].data = (<any>this).loadFiles(target);
-                        (<any>this).timeoutProview((<any>this).tabs);
+                if (file.type === 'folder') {
+                    if ((<any>this).debounce.canDo) {
+                        (<any>this).debounce.canDo = false;
+
+                        let code = (<any>this).getTabCode((<any>this).activeURL);
+                        if (code) {
+                            (<any>this).tabs[code].label = file.name;
+                            (<any>this).tabs[code].url = target;
+                            (<any>this).tabs[code].data = (<any>this).loadFiles(target);
+                            (<any>this).timeoutProview((<any>this).tabs);
+                        }
+                        (<any>this).activeURL = target;
+                        (<any>this).inputURL = target;
+
+                        if ((<any>this).debounce.timer) {
+                            clearTimeout((<any>this).debounce.timer);
+                        }
+                        (<any>this).timer = setTimeout(() => {
+                            (<any>this).debounce.canDo = true;
+                        }, 1000);
                     }
-                    (<any>this).activeURL = target;
-                    (<any>this).inputURL = target;
                 }
                 else {
-                    // if(file.isImage) {
-
-                    // }
-                    // else {
-
-                    // }
                     global.shell.openExternal(`file://${file.url}`);
                 }
             }
