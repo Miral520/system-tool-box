@@ -49,6 +49,17 @@ export default {
                 maxWidth: 100,
                 maxHeight: 100,
             },
+
+            contextMenu: { // 右键菜单
+                delete: {
+                    label: '删除',
+                    fn: 'delFile',
+                },
+                rename: {
+                    label: '重命名',
+                    fn: 'reName',
+                },
+            },
         }
     },
     created() {
@@ -56,6 +67,41 @@ export default {
         (<any>this).watchSpace();
     },
     methods: {
+        // 菜单方法重定向
+        setMenuMethod(menu: any, data: any) {
+            (<any>this)[menu.fn](data);
+        },
+
+        // 删除
+        delFile(data: any) {
+            (<any>this).$confirm({
+                title: '确定删除？',
+                content: `您确定要永久删除文件 ${data.name} 吗？`,
+                okText: '确认',
+                cancelText: '取消',
+                onOk() {
+                    global.fs.unlink(data.url, (err: any) => {
+                        if (err) {
+                            (<any>this).$message.error(err);
+                            return false;
+                        }
+                        else {
+                            (<any>this).$message.success('删除成功！');
+                            (<any>this).refresh();
+                        }
+                    });
+                },
+                // onCancel() {
+
+                // },
+            });
+        },
+
+        // 重命名
+        reName(data: any) {
+            console.log(data);
+        },
+
         // 初始化
         init() {
             (<any>this).tabs = [];
@@ -392,11 +438,6 @@ export default {
 
         // 单击聚焦
         handleClick(data: any) {
-
-        },
-
-        // 右键菜单
-        handleMenu(data: any) {
 
         },
 

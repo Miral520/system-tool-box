@@ -49,7 +49,7 @@ const mapTabs = (tabs: any) => {
                                 lastThumb: true,
                             });
                             clearTimeout(timer);
-                        }, (t_i + 1) * i * 50);
+                        }, (t_i + 1) * i * 60);
                     })(tabIndex, index);
                 }
             }
@@ -84,7 +84,7 @@ const getBase64 = (url: any) => {
             });
         }
         img = img.toPNG({
-            scaleFactor: 0.8,
+            scaleFactor: 0.7,
         }).toString('base64');
         resolve({
             base64: `data:image/png;base64,${img}`,

@@ -30,25 +30,36 @@
             <vue-scroll v-if="item.data.lists.length">
               <a-list :item-layout="isThumb ? 'horizontal' : 'vertical'" :grid="isThumb ? grid.thumb : grid.list" :data-source="item.data.lists">
                 <a-list-item slot="renderItem" slot-scope="file, i" v-show="!(file.hide && hidden)">
-                  <!-- 缩略图 -->
-                  <a-card class="files_list" v-if="isThumb" :bordered="false" :bodyStyle="{padding: 0}" hoverable>
-                    <a href="javascript:void(0)" class="files_link" :fid="i" @dblclick="openFile(file)" @click="handleClick(file)" @contextmenu.prevent="handleMenu(file)" @keyup.32="handleSpace(file)">
-                      <div class="files_icon" v-if="file.proload">
-                        <img :src="file.proload" />
-                      </div>
-                      <a-icon :type="file.type" theme="twoTone" class="files_icon" v-else />
-                      <p class="files_name" :title="file.name">{{ file.name }}</p>
-                      <p class="files_desc">{{ file.desc }}</p>
-                    </a>
-                  </a-card>
+                  <a-dropdown :trigger="['contextmenu']">
+                    
+                    <!-- 缩略图 -->
+                    <a-card class="files_list" v-if="isThumb" :bordered="false" :bodyStyle="{padding: 0}" hoverable @click="e => e.preventDefault()">
+                      <a href="javascript:void(0)" class="files_link" :fid="i" @dblclick="openFile(file)" @click="handleClick(file)" @keyup.32="handleSpace(file)">
+                        <div class="files_icon" v-if="file.proload">
+                          <img :src="file.proload" />
+                        </div>
+                        <a-icon :type="file.type" theme="twoTone" class="files_icon" v-else />
+                        <p class="files_name" :title="file.name">{{ file.name }}</p>
+                        <p class="files_desc">{{ file.desc }}</p>
+                      </a>
+                    </a-card>
 
-                  <!-- 列表 -->
-                  <div class="files_col" v-else>
-                    <a-list-item-meta :description="file.desc" @dblclick="openFile(file)" @click="handleClick(file)" @contextmenu.prevent="handleMenu(file)" @keyup.32="handleSpace(file)">
-                      <a slot="title" href="javascript:void(0)" :fid="i" :title="file.name">{{ file.name }}</a>
-                      <a-avatar slot="avatar" size="large" :src="file.proload" :icon="file.type"  style="color: #1890ff; backgroundColor: #e6f7ff" />
-                    </a-list-item-meta>
-                  </div>
+                    <!-- 列表 -->
+                    <div class="files_col" v-else @click="e => e.preventDefault()">
+                      <a-list-item-meta :description="file.desc" @dblclick="openFile(file)" @click="handleClick(file)" @keyup.32="handleSpace(file)">
+                        <a slot="title" href="javascript:void(0)" :fid="i" :title="file.name">{{ file.name }}</a>
+                        <a-avatar slot="avatar" size="large" :src="file.proload" :icon="file.type"  style="color: #1890ff; backgroundColor: #e6f7ff" />
+                      </a-list-item-meta>
+                    </div>
+
+                    <!-- 右键菜单 -->
+                    <a-menu slot="overlay">
+                      <a-menu-item v-for="(menu, menuName) in contextMenu" :key="menuName">
+                        <a href="javascript:void(0);" @click="setMenuMethod(menu, file)">{{ menu.label }}</a>
+                      </a-menu-item>
+                    </a-menu>
+
+                  </a-dropdown>
                 </a-list-item>
               </a-list>
             </vue-scroll>
