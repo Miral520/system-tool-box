@@ -1,9 +1,64 @@
 import vars from './variables'
 import store from 'store'
+import axios from 'axios';
+import Antd from 'ant-design-vue';
+import Qs from 'qs';
 declare var global: any;
 declare var eStore: any;
 
 export default {
+    // 请求
+    getData(url: String = '', method: String = 'get', data: Object = {}, config: any) {
+        let setting: any = {
+            url: url,
+            method: method,
+            transformRequest: [(data: any, headers: any) => {
+                return Qs.stringify(data);
+            }],
+            responseType: 'json',
+            transformResponse: [(data: any) => {
+              return data;
+            }],
+            onUploadProgress: (progressEvent: any) => {
+                if(progressEvent.lengthComputable) {
+                    console.log(progressEvent.loaded, progressEvent.total, `${Math.ceil(progressEvent.loaded / progressEvent.total * 100)}%`);
+                }
+            },
+            onDownloadProgress: (progressEvent: any) => {
+                if(progressEvent.lengthComputable) {
+                    console.log(progressEvent.loaded, progressEvent.total, `${Math.ceil(progressEvent.loaded / progressEvent.total * 100)}%`);
+                }
+            },
+        };
+
+        if(data && JSON.stringify(data) !== '{}') {
+            setting[method === 'get' ? 'params' : 'data'] = data;
+        }
+
+        if(config && config instanceof Object && JSON.stringify(config) !== '{}') {
+            for (const key in config) {
+                setting[key] = config[key];
+            }
+        }
+
+        return axios(setting)
+        .then((res: any) => {
+            return res.data;
+        }, (rej: any) => {
+            Antd.message.error(rej);
+        });
+    },
+
+    // 同时进行多个请求
+    getAllDate(arr: any, callback: Function) {
+        axios.all(arr)
+        .then(data => {
+            if(callback) {
+                callback(data);
+            }
+        });
+    },
+
     // 保存数据
     saveProfile(key: any, data: any) {
         store.commit(`set${key.length > 1 ? `${key[0].toUpperCase()}${key.substr(1)}` : key[0].toUpperCase()}`, data);

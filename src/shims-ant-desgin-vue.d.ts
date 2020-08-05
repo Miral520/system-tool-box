@@ -1,0 +1,1 @@
+declare module 'ant-design-vue/es/date-picker/locale/zh_CN';

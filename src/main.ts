@@ -5,6 +5,7 @@ import store from 'store'
 import utils from 'utils/utils'
 import Antd from 'ant-design-vue';
 import vuescroll from 'vuescroll';
+import locale from 'ant-design-vue/es/date-picker/locale/zh_CN';
 import 'ant-design-vue/dist/antd.css';
 import 'animate.css'
 
@@ -25,8 +26,14 @@ Vue.use(vuescroll, {
   },
 });
 
+Vue.prototype.locale = locale;
+
 Vue.prototype.$fn = utils.mixin;
 Vue.prototype.$var = utils.vars;
+Vue.prototype.$axios = utils.mixin.getData;
+Vue.prototype.$axiosAll = utils.mixin.getAllDate;
+Vue.prototype.$cities = utils.cities;
+Vue.prototype.$weather = utils.weather;
 
 Vue.config.productionTip = false;
 

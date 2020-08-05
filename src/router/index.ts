@@ -20,6 +20,13 @@ const routes: Array<any> = [
     showFooter: false,
     component: () => import('views/Files/index.vue'),
   },
+  {
+    path: '/railway',
+    name: '火车票',
+    icon: 'wallet',
+    showFooter: false,
+    component: () => import('views/Railway/index.vue'),
+  },
 ]
 
 const router = new VueRouter({
