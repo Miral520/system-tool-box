@@ -11,14 +11,14 @@ export default {
             filter: {
                 from: '',
                 to: '',
-                date: '',
+                date: moment(),
             },
             // requirePath: 'https://kyfw.12306.cn/otn/leftTicket/query?leftTicketDTO.train_date=2020-08-05&leftTicketDTO.from_station=GZQ&leftTicketDTO.to_station=SZQ&purpose_codes=ADULT',
         }
     },
     methods: {
         disabledDate(current: any) {
-            return current && current < moment().endOf('day');
+            return current && current.format('YYYYMMDD') < moment().format('YYYYMMDD');
         },
     },
     created() {
