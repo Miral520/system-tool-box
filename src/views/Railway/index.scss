@@ -1,5 +1,17 @@
 .railway {
     box-sizing: border-box;
-    padding: 0 30px;
+    padding: 9px 30px 0;
+    display: flex;
+    flex-direction: column;
     @include full-layout;
+    .railway_main {
+        flex: 1;
+    }
+}
+
+.railway_filter_cascader {
+    .ant-cascader-menu {
+        height: auto;
+        max-height: 500px;
+    }
 }

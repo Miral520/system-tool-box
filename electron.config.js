@@ -14,7 +14,7 @@ const defaultSize = { // 窗口默认尺寸
       height: 345,
     },
     init: {
-      width: 1200,
+      width: 1366,
       height: 800,
     },
   },

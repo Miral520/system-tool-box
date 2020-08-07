@@ -19,16 +19,16 @@ export default {
             transformResponse: [(data: any) => {
               return data;
             }],
-            onUploadProgress: (progressEvent: any) => {
-                if(progressEvent.lengthComputable) {
-                    console.log(progressEvent.loaded, progressEvent.total, `${Math.ceil(progressEvent.loaded / progressEvent.total * 100)}%`);
-                }
-            },
-            onDownloadProgress: (progressEvent: any) => {
-                if(progressEvent.lengthComputable) {
-                    console.log(progressEvent.loaded, progressEvent.total, `${Math.ceil(progressEvent.loaded / progressEvent.total * 100)}%`);
-                }
-            },
+            // onUploadProgress: (progressEvent: any) => {
+            //     if(progressEvent.lengthComputable) {
+            //         console.log(progressEvent.loaded, progressEvent.total, `${Math.ceil(progressEvent.loaded / progressEvent.total * 100)}%`);
+            //     }
+            // },
+            // onDownloadProgress: (progressEvent: any) => {
+            //     if(progressEvent.lengthComputable) {
+            //         console.log(progressEvent.loaded, progressEvent.total, `${Math.ceil(progressEvent.loaded / progressEvent.total * 100)}%`);
+            //     }
+            // },
         };
 
         if(data && JSON.stringify(data) !== '{}') {
@@ -41,6 +41,21 @@ export default {
             }
         }
 
+        return axios(setting)
+        .then((res: any) => {
+            return res.data;
+        }, (rej: any) => {
+            Antd.message.error(rej);
+        });
+    },
+
+    // 请求文件
+    getFiles(url: String = '') {
+        let setting: any = {
+            url: url,
+            method: 'get',
+            responseType: 'stream',
+        };
         return axios(setting)
         .then((res: any) => {
             return res.data;
