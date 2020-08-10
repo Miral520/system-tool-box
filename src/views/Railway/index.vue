@@ -51,9 +51,14 @@
     </div>
     <a-divider />
     <div class="railway_main">
-      <vue-scroll>
+      <a-table
+        :columns="table.columns"
+        :data-source="table.data"
+        :scroll="table.scroll"
+      ></a-table>
+      <!-- <vue-scroll>
       
-      </vue-scroll>
+      </vue-scroll> -->
     </div>
   </div>
 </template>
