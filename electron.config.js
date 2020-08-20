@@ -73,6 +73,7 @@ function createWindow () {
       nodeIntegration: true,
       nodeIntegrationInWorker: true,
       webSecurity: false,
+      allowRunningInsecureContent: true,
     },
   });
 

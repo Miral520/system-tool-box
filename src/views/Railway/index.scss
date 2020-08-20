@@ -4,9 +4,35 @@
     display: flex;
     flex-direction: column;
     @include full-layout;
-
+    .railway_filter {
+        .ant-form {
+            &.ant-form-inline {
+                .ant-form-item {
+                    &.ant-row {
+                        &:last-child {
+                            margin-right: 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
     .railway_main {
+        display: flex;
+        flex-direction: column;
         flex: 1;
+        border-top: 1px solid #e8e8e8;
+        margin-top: 25px;
+        padding-top: 10px;
+        box-sizing: border-box;
+        .railway_list {
+            width: 80%;
+            background: #fff;
+            // border: 1px solid #e8e8e8;
+            display: flex;
+            border-radius: 3px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+        }
     }
 }
 

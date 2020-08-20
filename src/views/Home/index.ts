@@ -5,24 +5,11 @@ export default {
     name: 'home',
     data() {
         return {
-            statistic: [
-                {
-                    title: '运行次数',
-                    value: eStore.get('runTime'),
-                    suffix: {
-                        type: 'text',
-                        value: '',
-                    },
-                },
-                {
-                    title: '今日',
-                    value: (<any>this).getToday(),
-                    suffix: {
-                        type: 'text',
-                        value: '',
-                    },
-                },
-            ],
+            // 运行次数
+            runTime: eStore.get('runTime'),
+
+            // 今日
+            today: (<any>this).getToday(),
 
             // 滚动条配置
             ops: {
@@ -45,10 +32,71 @@ export default {
 
             // 刷新定时器
             timer: null,
+
+            // 天气信息
+            weather: {
+                next: {
+                    columns: [
+                        {
+                            title: '日期',
+                            dataIndex: 'date',
+                            key: 'date',
+                        },
+                        {
+                            title: '天气',
+                            dataIndex: 'type',
+                            key: 'type',
+                            scopedSlots: { customRender: 'type' },
+                        },
+                        {
+                            title: '气温',
+                            dataIndex: 'temp',
+                            key: 'temp',
+                        },
+                        {
+                            title: '风速',
+                            dataIndex: 'wind',
+                            key: 'wind',
+                        },
+                    ],
+                    data: [
+                        {
+                            key: 0,
+                            date: '2018-12-12',
+                            type: '雷阵雨',
+                            temp: '32°/26°',
+                            wind: '东北风12级',
+                        },
+                        {
+                            key: 1,
+                            date: '2018-12-12',
+                            type: '雷阵雨',
+                            temp: '32°/26°',
+                            wind: '东北风12级',
+                        },
+                        {
+                            key: 2,
+                            date: '2018-12-12',
+                            type: '雷阵雨',
+                            temp: '32°/26°',
+                            wind: '东北风12级',
+                        },
+                        {
+                            key: 3,
+                            date: '2018-12-12',
+                            type: '雷阵雨',
+                            temp: '32°/26°',
+                            wind: '东北风12级',
+                        },
+                    ],
+                }
+            },
         }
     },
     created() {
-        (<any>this).getWeather(101070101);
+        (<any>this).getLocation((city: any) => {
+            (<any>this).getWeather(city.cityCode);
+        });
     },
     methods: {
         // 获取今日
@@ -61,10 +109,39 @@ export default {
 
         // 获取天气
         getWeather(cityCode: any) {
-            (<any>this).$axios('http://wthrcdn.etouch.cn/weather_mini', 'get', {
+            // http://wthrcdn.etouch.cn/weather_mini?city=北京
+            (<any>this).$getJsonP('http://wthrcdn.etouch.cn/weather_mini', {
                 citykey: cityCode,
-            }).then((res: any) => {
-                console.log(res.data);
+	        })
+			.then((json: any) => {
+                console.log(json.data);
+                // (<any>this).weather = json.data;
+            });
+        },
+
+        // 定位
+        getLocation(callback: Function) {
+	        (<any>this).$getJsonP('https://apis.map.qq.com/ws/location/v1/ip', {
+                key: 'LZBBZ-7JJKK-CKOJR-AVQEO-DGW7F-76BFO',
+	        })
+			.then((json: any) => {
+                (<any>this).$store.commit('setIP', json.result.ip);
+                if(json.result.ad_info.nation === '中国') {
+                    let province = json.result.ad_info.province;
+                    let city = json.result.ad_info.city;
+                    city = city.substr(0, city.length - 1);
+                    province = province.substr(0, province.length - 1);
+                    for (let i = 0; i < (<any>this).$weather.length; i++) {
+                        let target = (<any>this).$weather[i];
+                        if(target.province === province && target.cityName === city) {
+                            callback(target);
+                            break;
+                        }
+                    }
+                }
+                else {
+                    // (<any>this).weather = null;
+                }
             });
         },
 

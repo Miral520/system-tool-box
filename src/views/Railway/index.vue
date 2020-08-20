@@ -2,13 +2,13 @@
   <div class="railway">
     <div class="railway_filter">
       <a-form-model :model="filter" layout="inline">
-        <a-form-model-item label="出发地" prop="from">
+        <a-form-model-item label="出发" prop="from">
           <a-cascader
             v-model="filter.from"
             :options="cities"
             :show-search="{ onFilter }"
             popupClassName="railway_filter_cascader"
-            placeholder="请选择出发地"
+            placeholder="请选择出发站点"
           >
             <template slot="displayRender" slot-scope="{ labels, selectedOptions }">
               <span :data="selectedOptions">{{ labels[labels.length - 1] }}</span>
@@ -18,13 +18,13 @@
             </template>
           </a-cascader>
         </a-form-model-item>
-        <a-form-model-item label="到达地" prop="to">
+        <a-form-model-item label="到达" prop="to">
           <a-cascader
             v-model="filter.to"
             :options="cities"
             :show-search="{ onFilter }"
             popupClassName="railway_filter_cascader"
-            placeholder="请选择到达地"
+            placeholder="请选择到达站点"
           >
             <template slot="displayRender" slot-scope="{ labels, selectedOptions }">
               <span :data="selectedOptions">{{ labels[labels.length - 1] }}</span>
@@ -34,7 +34,7 @@
             </template>
           </a-cascader>
         </a-form-model-item>
-        <a-form-model-item label="出发时间" prop="date">
+        <a-form-model-item label="日期" prop="date">
           <a-date-picker
             v-model="filter.date"
             :disabledDate="disabledDate"
@@ -49,16 +49,12 @@
         </a-form-model-item>
       </a-form-model>
     </div>
-    <a-divider />
     <div class="railway_main">
-      <a-table
-        :columns="table.columns"
-        :data-source="table.data"
-        :scroll="table.scroll"
-      ></a-table>
-      <!-- <vue-scroll>
-      
-      </vue-scroll> -->
+      <vue-scroll>
+        <div class="railway_list">
+          
+        </div>
+      </vue-scroll>
     </div>
   </div>
 </template>

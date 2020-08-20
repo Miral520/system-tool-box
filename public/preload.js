@@ -23,6 +23,7 @@ global.shell = global.electron.shell;
 
 // node
 global.fs = require('fs');
+global.https = require('https');
 global.path = require('path');
 global.os = require('os');
 global.child_process = require('child_process');

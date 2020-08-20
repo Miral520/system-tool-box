@@ -1,10 +1,16 @@
+import Vue from 'vue'
 import vars from './variables'
 import store from 'store'
 import axios from 'axios';
+import VueJsonp from 'vue-jsonp'
 import Antd from 'ant-design-vue';
 import Qs from 'qs';
 declare var global: any;
 declare var eStore: any;
+
+Vue.use(VueJsonp);
+
+// axios.defaults.withCredentials = true; // 跨域携带cookie
 
 export default {
     // 请求
@@ -47,6 +53,20 @@ export default {
         }, (rej: any) => {
             Antd.message.error(rej);
         });
+    },
+
+    // JsonP获取数据
+    getJsonP(url: String, params: Object = {}) {
+        return (<any>this).$jsonp(url, Object.assign(params, {
+            output: 'jsonp',
+        }))
+        .then((json: any) => {
+            return json;
+        }, (rej: any) => {
+            Antd.message.error(rej);
+        }).catch((err: any) => {
+            Antd.message.error(err);
+        })
     },
 
     // 请求文件

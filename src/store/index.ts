@@ -23,6 +23,9 @@ export default new Vuex.Store({
     // 临时存储用户设置
     config: {},
 
+    // 外网IP
+    ip: '',
+
     // 主题
     theme: 'light',
   },
@@ -55,6 +58,11 @@ export default new Vuex.Store({
     // 设置临时存储用户设置
     setConfig(state: any, data: any) {
       state.config = data;
+    },
+
+    // 设置外网IP
+    setIP(state: any, data: String) {
+      state.ip = data;
     },
 
     // 设置主题

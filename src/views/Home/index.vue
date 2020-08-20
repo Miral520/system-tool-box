@@ -2,19 +2,45 @@
   <div class="home">
     <vue-scroll :ops="ops">
       <div class="home_statistic">
-        <p class="home_title">统计数据</p>
-        <a-row :gutter="5">
-          <a-col :span="6" v-for="(item, index) in statistic" :key="index">
-            <a-card :bordered="false" hoverable>
-              <a-statistic :title="item.title" :value="item.value">
-                <template v-if="item.suffix.value" #suffix>
-                  <a-icon :type="item.suffix.value" v-if="item.suffix.type === 'icon'" />
-                  <span v-else>{{ item.suffix.value }}</span>
-                </template>
-              </a-statistic>
-            </a-card>
-          </a-col>
-        </a-row>
+        <p class="home_title">
+          <span>天气预报</span>
+          <span class="run">累计运行 <b>{{ runTime }}</b> 次</span>
+        </p>
+        <div class="home_main">
+          <a-collapse class="home_weather" :bordered="false" expandIconPosition="right" accordion>
+            <a-collapse-panel class="home_weather-item" key="1">
+              <div slot="header" class="weather_header">
+                <div class="weather_header-top">
+                  <p class="weather_header-city">广州市 · 广东省 · 中国</p>
+                  <p class="weather_header-date">{{ today }}</p>
+                </div>
+                <div class="weather_header-today">
+                  <div class="weather_header-today-info">
+                    <p class="weather_header-today-deg">37</p>
+                    <img class="weather_header-today-icon" :src="require(`assets/img/weather/晴.png`)" alt="晴">
+                    <span class="weather_header-today-label">晴</span>
+                  </div>
+                  <div class="weather_header-today-other">
+                    <div class="weather_header-today-wind">
+                      <span>风力</span>
+                      <span>东风2级</span>
+                    </div>
+                    <p class="weather_header-today-yes">昨日 多云 13°/12°</p>
+                  </div>
+                </div>
+                <p class="weather_header-tip">感冒低发期，天气舒适，请注意多吃蔬菜水果，多喝水哦</p>
+              </div>
+              <div class="weather_next">
+                <a-table :showHeader="false" :pagination="false" :columns="weather.next.columns" :data-source="weather.next.data">
+                  <div class="weather_next-type" slot="type" slot-scope="type">
+                    <img :src="require(`assets/img/weather/${type}.png`)" :alt="type">
+                    <span>{{ type }}</span>
+                  </div>
+                </a-table>
+              </div>
+            </a-collapse-panel>
+          </a-collapse>
+        </div>
       </div>
       <div class="home_statistic" v-if="sysInfo">
         <p class="home_title">系统状况</p>

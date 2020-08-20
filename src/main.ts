@@ -30,6 +30,7 @@ Vue.prototype.locale = locale;
 
 Vue.prototype.$fn = utils.mixin;
 Vue.prototype.$var = utils.vars;
+Vue.prototype.$getJsonP = utils.mixin.getJsonP;
 Vue.prototype.$axios = utils.mixin.getData;
 Vue.prototype.$axiosAll = utils.mixin.getAllDate;
 Vue.prototype.$getFiles = utils.mixin.getFiles;
