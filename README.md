@@ -11,8 +11,6 @@ npm install
 
 ### 尝试一下
 ```javascript
-npm run prod // 生产环境
-
-npm run dev // 开发环境
+npm run prod
 ```
 或直接执行文件下bin.bat文件(Windows系统下有效)

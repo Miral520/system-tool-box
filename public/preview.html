@@ -111,7 +111,7 @@
             <img src="" class="preview_main" id="preMain">
         </div>
         <div class="preview-layout" id="preFileLayout">
-            <img src="../src/assets/img/files_icon.png" class="file_icon" id="fileIcon">
+            <img src="../src/assets/img/files/files_icon.png" class="file_icon" id="fileIcon">
             <div class="file_text">
                 <p class="file_name" id="fileName"></p>
                 <p class="file_url" id="fileUrl"></p>
@@ -152,7 +152,7 @@
                     document.getElementById('fileName').innerText = message.target.name;
                     document.getElementById('fileUrl').innerText = message.target.url;
                     document.getElementById('fileDesc').innerText = message.target.desc;
-                    document.getElementById('fileIcon').src = `../src/assets/img/${message.target.type === 'file' ? 'files' : 'folder'}_icon.png`;
+                    document.getElementById('fileIcon').src = `../src/assets/img/files/${message.target.type === 'file' ? 'files' : 'folder'}_icon.png`;
                 }
             });
         }

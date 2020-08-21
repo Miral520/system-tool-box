@@ -1,1 +1,1 @@
-// declare module 'cpt/TrainTickects/index';
+declare module 'worker-loader!./../../worker';

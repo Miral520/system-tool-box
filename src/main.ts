@@ -34,7 +34,6 @@ Vue.prototype.$getJsonP = utils.mixin.getJsonP;
 Vue.prototype.$axios = utils.mixin.getData;
 Vue.prototype.$axiosAll = utils.mixin.getAllDate;
 Vue.prototype.$getFiles = utils.mixin.getFiles;
-Vue.prototype.$cities = utils.cities;
 
 Vue.config.productionTip = false;
 
