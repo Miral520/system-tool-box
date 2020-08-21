@@ -11,24 +11,24 @@
             <a-collapse-panel class="home_weather-item" key="1">
               <div slot="header" class="weather_header">
                 <div class="weather_header-top">
-                  <p class="weather_header-city">广州市 · 广东省 · 中国</p>
+                  <p class="weather_header-city">{{ position.city }} · {{ position.province }} · {{ position.nation }}</p>
                   <p class="weather_header-date">{{ today }}</p>
                 </div>
                 <div class="weather_header-today">
                   <div class="weather_header-today-info">
-                    <p class="weather_header-today-deg">37</p>
-                    <img class="weather_header-today-icon" :src="require(`assets/img/weather/晴.png`)" alt="晴">
-                    <span class="weather_header-today-label">晴</span>
+                    <p class="weather_header-today-deg">{{ weather.today.temp }}</p>
+                    <img class="weather_header-today-icon" :src="require(`assets/img/weather/${weather.today.type}${weather.today.point}.png`)" :alt="weather.today.type">
+                    <span class="weather_header-today-label">{{ weather.today.type }}</span>
                   </div>
                   <div class="weather_header-today-other">
                     <div class="weather_header-today-wind">
                       <span>风力</span>
-                      <span>东风2级</span>
+                      <span>{{ weather.today.wind }}</span>
                     </div>
-                    <p class="weather_header-today-yes">昨日 多云 13°/12°</p>
+                    <p class="weather_header-today-yes">昨日 {{ weather.yest.type }} {{ weather.yest.temp }}</p>
                   </div>
                 </div>
-                <p class="weather_header-tip">感冒低发期，天气舒适，请注意多吃蔬菜水果，多喝水哦</p>
+                <p class="weather_header-tip">{{ weather.today.tip }}</p>
               </div>
               <div class="weather_next">
                 <a-table :showHeader="false" :pagination="false" :columns="weather.next.columns" :data-source="weather.next.data">
@@ -196,6 +196,11 @@
                 <a-tag color="blue">{{ sysInfo.networks.length }}个网络适配器</a-tag>
               </template>
               <ul class="model">
+                <li class="list less_margin">
+                  <div class="list_networks">
+                    <a-statistic title="IP" :value="ip" />
+                  </div>
+                </li>
                 <li class="list">
                   <div class="list_networks" v-for="(item, key) in sysInfo.networks" :key="key">
                     <p class="list_networks-name">{{ item.name }}</p>

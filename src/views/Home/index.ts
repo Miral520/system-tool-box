@@ -33,8 +33,41 @@ export default {
             // 刷新定时器
             timer: null,
 
+            // 地点
+            position: {
+                adcode: '',
+                city: '',
+                district: '',
+                nation: '',
+                province: '',
+                location: {
+                    lat: 0,
+                    lng: 0,
+                },
+            },
+
+            // IP
+            ip: '',
+
+            // 时间点
+            timePoint: {
+                sunrise: 7,
+                sunset: 18,
+            },
+
             // 天气信息
             weather: {
+                today: {
+                    tip: '',
+                    temp: 0,
+                    type: '无数据',
+                    wind: '',
+                    point: '',
+                },
+                yest: {
+                    type: '',
+                    temp: '',
+                },
                 next: {
                     columns: [
                         {
@@ -59,43 +92,14 @@ export default {
                             key: 'wind',
                         },
                     ],
-                    data: [
-                        {
-                            key: 0,
-                            date: '2018-12-12',
-                            type: '雷阵雨',
-                            temp: '32°/26°',
-                            wind: '东北风12级',
-                        },
-                        {
-                            key: 1,
-                            date: '2018-12-12',
-                            type: '雷阵雨',
-                            temp: '32°/26°',
-                            wind: '东北风12级',
-                        },
-                        {
-                            key: 2,
-                            date: '2018-12-12',
-                            type: '雷阵雨',
-                            temp: '32°/26°',
-                            wind: '东北风12级',
-                        },
-                        {
-                            key: 3,
-                            date: '2018-12-12',
-                            type: '雷阵雨',
-                            temp: '32°/26°',
-                            wind: '东北风12级',
-                        },
-                    ],
+                    data: [],
                 }
             },
         }
     },
     created() {
-        (<any>this).getLocation((city: any) => {
-            (<any>this).getWeather(city.cityCode);
+        (<any>this).getLocation((city: String) => {
+            (<any>this).getWeather(city);
         });
     },
     methods: {
@@ -108,14 +112,31 @@ export default {
         },
 
         // 获取天气
-        getWeather(cityCode: any) {
-            // http://wthrcdn.etouch.cn/weather_mini?city=北京
+        getWeather(city: String) {
+            (<any>this).weather.next.data = [];
             (<any>this).$getJsonP('http://wthrcdn.etouch.cn/weather_mini', {
-                citykey: cityCode,
+                city: city,
 	        })
 			.then((json: any) => {
-                console.log(json.data);
-                // (<any>this).weather = json.data;
+                let hour = new Date().getHours();
+                (<any>this).weather.today.tip = json.data.ganmao;
+                (<any>this).weather.today.temp = parseFloat(json.data.wendu);
+                (<any>this).weather.today.type = json.data.forecast[0].type;
+                (<any>this).weather.today.wind = `${json.data.forecast[0].fengxiang}${json.data.forecast[0].fengli.split('[')[2].split(']')[0]}`;
+                (<any>this).weather.today.point = (hour >= (<any>this).timePoint.sunrise && hour < (<any>this).timePoint.sunset) ? '' : '_dark';
+                (<any>this).weather.yest = {
+                    type: json.data.yesterday.type,
+                    temp: `${json.data.yesterday.high.substr(3)} / ${json.data.yesterday.low.substr(3)}`,
+                };
+                json.data.forecast.forEach((day: any, i: any) => {
+                    (<any>this).weather.next.data.push({
+                        key: i,
+                        date: day.date,
+                        type: day.type,
+                        temp: `${day.high.substr(3)} / ${day.low.substr(3)}`,
+                        wind: `${day.fengxiang}${day.fengli.split('[')[2].split(']')[0]}`,
+                    });
+                });
             });
         },
 
@@ -126,21 +147,28 @@ export default {
 	        })
 			.then((json: any) => {
                 (<any>this).$store.commit('setIP', json.result.ip);
+                (<any>this).ip = json.result.ip;
+                (<any>this).position.adcode = json.result.ad_info.adcode;
+                (<any>this).position.city = json.result.ad_info.city;
+                (<any>this).position.district = json.result.ad_info.district;
+                (<any>this).position.nation = json.result.ad_info.nation;
+                (<any>this).position.province = json.result.ad_info.province;
+                (<any>this).position.location = json.result.location;
                 if(json.result.ad_info.nation === '中国') {
-                    let province = json.result.ad_info.province;
                     let city = json.result.ad_info.city;
                     city = city.substr(0, city.length - 1);
-                    province = province.substr(0, province.length - 1);
-                    for (let i = 0; i < (<any>this).$weather.length; i++) {
-                        let target = (<any>this).$weather[i];
-                        if(target.province === province && target.cityName === city) {
-                            callback(target);
-                            break;
-                        }
-                    }
+                    callback(city);
                 }
                 else {
-                    // (<any>this).weather = null;
+                    (<any>this).weather.next.data = [];(<any>this).weather.today.tip = json.data.ganmao;
+                    (<any>this).weather.today.temp = '未知';
+                    (<any>this).weather.today.type = '无数据';
+                    (<any>this).weather.today.wind = '';
+                    (<any>this).weather.today.point = '';
+                    (<any>this).weather.yest = {
+                        type: '未知',
+                        temp: '无数据',
+                    };
                 }
             });
         },

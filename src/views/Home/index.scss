@@ -184,6 +184,9 @@
                 &:last-child {
                     margin-bottom: 0;
                 }
+                &.less_margin {
+                    margin-bottom: 5px;
+                }
                 .list_text {
                     display: flex;
                     justify-content: space-between;

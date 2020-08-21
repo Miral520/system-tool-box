@@ -35,7 +35,6 @@ Vue.prototype.$axios = utils.mixin.getData;
 Vue.prototype.$axiosAll = utils.mixin.getAllDate;
 Vue.prototype.$getFiles = utils.mixin.getFiles;
 Vue.prototype.$cities = utils.cities;
-Vue.prototype.$weather = utils.weather;
 
 Vue.config.productionTip = false;
 
