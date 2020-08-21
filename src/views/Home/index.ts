@@ -57,6 +57,7 @@ export default {
 
             // 天气信息
             weather: {
+                show: '',
                 today: {
                     tip: '',
                     temp: 0,

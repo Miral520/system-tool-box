@@ -7,12 +7,12 @@
           <span class="run">累计运行 <b>{{ runTime }}</b> 次</span>
         </p>
         <div class="home_main">
-          <a-collapse class="home_weather" :bordered="false" expandIconPosition="right" accordion>
-            <a-collapse-panel class="home_weather-item" key="1">
+          <a-collapse class="home_weather" :bordered="false" expandIconPosition="right" v-model="weather.show" accordion>
+            <a-collapse-panel class="home_weather-item" key="next">
               <div slot="header" class="weather_header">
                 <div class="weather_header-top">
                   <p class="weather_header-city">{{ position.city }} · {{ position.province }} · {{ position.nation }}</p>
-                  <p class="weather_header-date">{{ today }}</p>
+                  <p class="weather_header-handle">{{ weather.show ? '收起预报' : '五天预报' }}</p>
                 </div>
                 <div class="weather_header-today">
                   <div class="weather_header-today-info">
@@ -21,6 +21,7 @@
                     <span class="weather_header-today-label">{{ weather.today.type }}</span>
                   </div>
                   <div class="weather_header-today-other">
+                    <a-tag color="blue">{{ today }}</a-tag>
                     <div class="weather_header-today-wind">
                       <span>风力</span>
                       <span>{{ weather.today.wind }}</span>

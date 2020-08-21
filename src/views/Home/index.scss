@@ -39,6 +39,8 @@
                 .ant-collapse-header {
                     .ant-collapse-arrow {
                         top: 23px;
+                        color: #666;
+                        font-size: 11px;
                     }
                 }
             }
@@ -50,10 +52,11 @@
                     justify-content: space-between;
                     align-items: center;
                     margin-bottom: 10px;
-                    .weather_header-date {
+                    .weather_header-handle {
                         margin: 0;
-                        font-size: 14px;
-                        color: #666;
+                        font-size: 12px;
+                        color: #999;
+                        transition: all 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86);
                     }
                     .weather_header-city {
                         font-size: 14px;
@@ -106,6 +109,9 @@
                         text-align: right;
                         color: #999;
                         font-size: 14px;
+                        .ant-tag {
+                            margin: 0 0 10px;
+                        }
                         .weather_header-today-yes {
                             height: 16px;
                             line-height: 16px;
