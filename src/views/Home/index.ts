@@ -130,6 +130,11 @@ export default {
                 (<any>this).weather.today.type = json.data.forecast[0].type;
                 (<any>this).weather.today.wind = `${json.data.forecast[0].fengxiang}${json.data.forecast[0].fengli.split('[')[2].split(']')[0]}`;
                 (<any>this).weather.today.point = (hour >= (<any>this).timePoint.sunrise && hour < (<any>this).timePoint.sunset) ? '' : '_dark';
+                try {
+                    require(`assets/img/weather/${(<any>this).weather.today.type}${(<any>this).weather.today.point}.png`);
+                } catch (error) {
+                    (<any>this).weather.today.point = '';
+                }
                 (<any>this).weather.yest = {
                     type: json.data.yesterday.type,
                     temp: `${json.data.yesterday.high.substr(3)} / ${json.data.yesterday.low.substr(3)}`,
