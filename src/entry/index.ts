@@ -84,6 +84,12 @@ export default<any> {
                 hasMsg: true,
                 menu: [ // 菜单
                     {
+                        label: '刷新',
+                        icon: 'reload',
+                        hasMsg: false,
+                        fn: 'handleReload',
+                    },
+                    {
                         label: '设置',
                         icon: 'setting',
                         hasMsg: true,
@@ -174,6 +180,13 @@ export default<any> {
             }
             else {
                 (<any>this).$store.commit('setTheme', config.theme);
+            }
+        },
+
+        // 刷新
+        handleReload() {
+            if((<any>this).$refs.current.refresh) {
+                (<any>this).$refs.current.refresh();
             }
         },
 

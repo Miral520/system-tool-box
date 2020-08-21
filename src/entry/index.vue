@@ -123,7 +123,7 @@
                   <div class="ml_content-main">
                     <transition name="custom-classes-transition" :duration="{ enter: 600, leave: 50 }" enter-active-class="animate__animated animate__fadeIn" leave-active-class="animate__animated animate__fadeOut">
                       <keep-alive>
-                        <router-view />
+                        <router-view ref="current" />
                       </keep-alive>
                     </transition>
                   </div>

@@ -99,11 +99,16 @@ export default {
         }
     },
     created() {
-        (<any>this).getLocation((city: String) => {
-            (<any>this).getWeather(city);
-        });
+        (<any>this).refresh();
     },
     methods: {
+        // 刷新
+        refresh() {
+            (<any>this).getLocation((city: String) => {
+                (<any>this).getWeather(city);
+            });
+        },
+
         // 获取今日
         getToday() {
             let date = new Date();
