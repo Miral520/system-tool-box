@@ -9,7 +9,7 @@ export default {
             runTime: eStore.get('runTime'),
 
             // 今日
-            today: (<any>this).getToday(),
+            today: '',
 
             // 滚动条配置
             ops: {
@@ -104,6 +104,7 @@ export default {
     methods: {
         // 刷新
         refresh() {
+            (<any>this).getToday();
             (<any>this).getLocation((city: String) => {
                 (<any>this).getWeather(city);
             });
@@ -114,7 +115,7 @@ export default {
             let date = new Date();
             let month = date.getMonth() + 1;
             let day = date.getDate();
-            return `${date.getFullYear()}年${month > 9 ? month : '0' + month}月${day > 9 ? day : '0' + day}日`;
+            (<any>this).today = `${date.getFullYear()}年${month > 9 ? month : '0' + month}月${day > 9 ? day : '0' + day}日`;
         },
 
         // 获取天气
