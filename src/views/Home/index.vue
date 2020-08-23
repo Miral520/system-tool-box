@@ -12,7 +12,7 @@
               <div slot="header" class="weather_header">
                 <div class="weather_header-top">
                   <p class="weather_header-city">{{ position.city }} · {{ position.province }} · {{ position.nation }}</p>
-                  <p class="weather_header-handle">{{ weather.show ? '收起预报' : '五天预报' }}</p>
+                  <p class="weather_header-handle">{{ weather.show ? '收起详情' : '五日预报' }}</p>
                 </div>
                 <div class="weather_header-today">
                   <div class="weather_header-today-info">
