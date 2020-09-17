@@ -1,5 +1,5 @@
 import moment from 'moment';
-import superagent from 'superagent';
+import puppeteer from 'puppeteer';
 import 'moment/locale/zh-cn';
 
 declare var eStore: any;
@@ -169,10 +169,20 @@ export default {
                 },
             },
 
+            browser: null,
+            page: null,
+
             // requirePath: 'https://kyfw.12306.cn/otn/leftTicket/query?leftTicketDTO.train_date=2020-08-05&leftTicketDTO.from_station=GZQ&leftTicketDTO.to_station=SZQ&purpose_codes=ADULT',
         }
     },
     methods: {
+        // 
+        async init() {
+            (<any>this).browser = await puppeteer.launch();
+            (<any>this).page = await (<any>this).browser.newPage();
+            await (<any>this).page.goto('https://kyfw.12306.cn/otn/leftTicket/query?leftTicketDTO.train_date=2020-08-05&leftTicketDTO.from_station=GZQ&leftTicketDTO.to_station=SZQ&purpose_codes=ADULT');
+        },
+
         // 不可选择的日期
         disabledDate(current: any) {
             return current && current.format('YYYYMMDD') < moment().format('YYYYMMDD');
