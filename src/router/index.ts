@@ -27,6 +27,13 @@ const routes: Array<any> = [
     showFooter: false,
     component: () => import('views/Railway/index.vue'),
   },
+  {
+    path: '/database',
+    name: '数据库',
+    icon: 'database',
+    showFooter: false,
+    component: () => import('views/Database/index.vue'),
+  },
 ]
 
 const router = new VueRouter({

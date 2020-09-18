@@ -1,5 +1,4 @@
 import moment from 'moment';
-import puppeteer from 'puppeteer';
 import 'moment/locale/zh-cn';
 
 declare var eStore: any;
@@ -178,9 +177,7 @@ export default {
     methods: {
         // 
         async init() {
-            (<any>this).browser = await puppeteer.launch();
-            (<any>this).page = await (<any>this).browser.newPage();
-            await (<any>this).page.goto('https://kyfw.12306.cn/otn/leftTicket/query?leftTicketDTO.train_date=2020-08-05&leftTicketDTO.from_station=GZQ&leftTicketDTO.to_station=SZQ&purpose_codes=ADULT');
+            
         },
 
         // 不可选择的日期
@@ -315,5 +312,6 @@ export default {
     },
     created() {
         (<any>this).getStationList();
+        (<any>this).init();
     },
 }
