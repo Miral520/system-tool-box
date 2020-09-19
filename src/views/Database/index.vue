@@ -2,11 +2,16 @@
   <div class="database">
     <div class="database_login">
       <div class="database_login-head">
-        <a-icon :type="login.title.icon" :theme="login.title.theme" />
-        <span>{{ login.title.label }}</span>
+        <div class="left">
+          <a-icon :type="login.title.icon" :theme="login.title.theme" />
+          <span>{{ login.title.label }}</span>
+        </div>
+        <div class="right">
+          <a-button icon="menu" ghost @click="loginMoreOpts">更多</a-button>
+        </div>
       </div>
-      <div class="database_login-main">
-        <vue-scroll>
+      <div class="database_login-main" :class="more ? '' : 'flex'">
+        <vue-scroll ref="loginScrollBar">
           <div class="database_login-layout">
             <a-form-model :model="login.value" v-bind="login.props">
               <a-form-model-item v-for="(item, key) in login.value" :key="key" :label="login.label[key].label">
@@ -24,7 +29,7 @@
         </vue-scroll>
       </div>
       <div class="database_login-btn">
-        <a-button icon="arrow-right" size="large" type="primary" block>登录</a-button>
+        <a-button icon="arrow-right" size="large" type="primary" block @click="handleLogin">登录</a-button>
       </div>
     </div>
   </div>

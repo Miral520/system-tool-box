@@ -1,8 +1,13 @@
+$login_height-full: 425px;
+$login_height-flex: 310px;
+$login_height-transition: all 0.3s ease-in-out;
+
 .database {
     box-sizing: border-box;
     padding: 9px 30px 0;
     position: relative;
     @include full-layout;
+
     .database_login {
         position: absolute;
         top: 50%;
@@ -10,7 +15,6 @@
         transform: translate(-50%, -50%);
         z-index: 1;
         width: 60%;
-        height: 80%;
         border-radius: 3px;
         background: #fff;
         overflow: hidden;
@@ -19,36 +23,73 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
         display: flex;
         flex-direction: column;
-        .database_login-head, .database_login-main, .database_login-btn {
+
+        .database_login-head,
+        .database_login-main,
+        .database_login-btn {
             width: 100%;
             overflow: hidden;
             box-sizing: border-box;
         }
+
         .database_login-head {
             height: 30px;
             line-height: 30px;
             margin-bottom: 20px;
             padding: 0 25px;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            i {
-                color: $main-color;
-                font-size: 20px;
+            .left {
+                display: flex;
+                align-items: center;
+                i {
+                    color: $main-color;
+                    font-size: 20px;
+                }
+                span {
+                    margin-left: 5px;
+                    font-size: 18px;
+                    font-weight: bold;
+                }
             }
-            span {
-                margin-left: 5px;
-                font-size: 18px;
-                font-weight: bold;
+            .right {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                .ant-btn {
+                    color: #666;
+                    font-size: 12px;
+                    &:hover, &:focus {
+                        border: none;
+                    }
+                    &:hover {
+                        color: $main-color;
+                    }
+                }
             }
         }
+
         .database_login-main {
-            flex: 1;
+            height: $login_height-full;
+            overflow: hidden;
+            transition: $login_height-transition;
+            &.flex {
+                height: $login_height-flex;
+                transition: $login_height-transition;
+                .database_login-layout {
+                    height: $login_height-flex;
+                    transition: $login_height-transition;
+                    overflow: hidden;
+                }
+            }
             .database_login-layout {
                 width: 100%;
                 box-sizing: border-box;
                 padding: 0 30px;
             }
         }
+
         .database_login-btn {
             height: 40px;
             margin-top: 20px;

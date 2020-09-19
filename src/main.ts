@@ -7,12 +7,13 @@ import Antd from 'ant-design-vue';
 import vuescroll from 'vuescroll';
 import locale from 'ant-design-vue/es/date-picker/locale/zh_CN';
 import 'ant-design-vue/dist/antd.css';
-import 'animate.css'
+import animate from 'animate.css'
 
 declare var global: any;
 declare var eStore: any;
 
 Vue.use(Antd);
+Vue.use(animate);
 
 Vue.use(vuescroll, {
   ops: {

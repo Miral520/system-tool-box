@@ -28,7 +28,7 @@ export default {
                 },
                 value: {
                     host: 'localhost',
-                    user: '',
+                    user: 'root',
                     password: '',
                     database: '',
                     port: 3306,
@@ -57,7 +57,7 @@ export default {
                     },
                     password: {
                         label: '密码',
-                        type: 'input',
+                        type: 'input-password',
                         props: {
                             placeholder: '该MySQL用户的密码',
                         },
@@ -133,6 +133,9 @@ export default {
 
             // 命令执行记录
             records: [],
+
+            // 更多
+            more: false,
         }
     },
     methods: {
@@ -141,10 +144,25 @@ export default {
 
         },
 
+        // 登录框更多
+        loginMoreOpts() {
+            (<any>this).more = !(<any>this).more;
+            (<any>this).$nextTick(() => {
+                (<any>this).$refs.loginScrollBar.refresh();
+            });
+        },
+
         // 创建连接
         createConnection() {
-            (<any>this).closeConnection();
+            // (<any>this).closeConnection();
             (<any>this).connection = mysql.createConnection((<any>this).login.value);
+            (<any>this).connection.connect((err: any) => {
+                if (err) {
+                    console.log('error: ' + err);
+                    return false;
+                  }
+                  console.log('Connected to the MySQL server.');                
+            });
         },
 
         // 关闭连接
@@ -174,6 +192,11 @@ export default {
                     callback(results, fields);
                 }
             });
+        },
+
+        // 登录数据库
+        handleLogin() {
+            (<any>this).createConnection();
         },
     },
     created() {
