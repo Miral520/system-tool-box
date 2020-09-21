@@ -10,6 +10,7 @@
           <a-button icon="menu" ghost @click="loginMoreOpts">更多</a-button>
         </div>
       </div>
+      <a-alert class="database_login-alert" v-bind="alert" />
       <div class="database_login-main" :class="more ? '' : 'flex'">
         <vue-scroll ref="loginScrollBar">
           <div class="database_login-layout">

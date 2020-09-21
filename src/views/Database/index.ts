@@ -1,4 +1,3 @@
-import mysql from 'mysql';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 
@@ -12,7 +11,7 @@ export default {
             // 登录信息
             login: {
                 title: {
-                    label: '数据库登录',
+                    label: '登录MySQL',
                     icon: 'database',
                     theme: 'filled',
                 },
@@ -128,14 +127,19 @@ export default {
                 },
             },
 
-            // 连接实例
-            connection: null,
-
             // 命令执行记录
             records: [],
 
             // 更多
             more: false,
+
+            // 提示
+            alert: {
+                closable: true,
+                banner: true,
+                message: '如果出现错误 Error: ER_NOT_SUPPORTED_AUTH_MODE',
+                description: `请在 MySQL 里使用 mysql_native_password 加密方式, 例如 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '123456'`,
+            },
         }
     },
     methods: {
@@ -152,51 +156,9 @@ export default {
             });
         },
 
-        // 创建连接
-        createConnection() {
-            // (<any>this).closeConnection();
-            (<any>this).connection = mysql.createConnection((<any>this).login.value);
-            (<any>this).connection.connect((err: any) => {
-                if (err) {
-                    console.log('error: ' + err);
-                    return false;
-                  }
-                  console.log('Connected to the MySQL server.');                
-            });
-        },
-
-        // 关闭连接
-        closeConnection() {
-            if((<any>this).connection && (<any>this).connection.end) {
-                (<any>this).connection.end((err: any) => {
-                    console.log(err);
-                });
-            }
-        },
-
-        // 终止连接
-        destroyConnection() {
-            if((<any>this).connection && (<any>this).connection.destroy) {
-                (<any>this).connection.destroy();
-            }
-        },
-
-        // 操作数据库
-        queryBase(cmd: string, callback: Function) {
-            (<any>this).connection.query(cmd, (error: any, results: any, fields: any) => {
-                if (error) {
-                    console.log(error);
-                    return false;
-                };
-                if(callback) {
-                    callback(results, fields);
-                }
-            });
-        },
-
         // 登录数据库
         handleLogin() {
-            (<any>this).createConnection();
+            
         },
     },
     created() {

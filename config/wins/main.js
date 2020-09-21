@@ -2,6 +2,23 @@ const { BrowserWindow, ipcMain, nativeTheme } = require('electron');
 const path = require('path');
 const { mainSize } = require('../default/size');
 const createPre = require('./preview');
+const db = require('../utils/db');
+
+// MySQL连接测试
+db.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'h2data',
+    database: '',
+    port: 3306,
+    localAddress: '',
+    charset: 'UTF8_GENERAL_CI',
+    connectTimeout: 10000,
+    stringifyObjects: false,
+    insecureAuth: false,
+    queryFormat: '',
+    supportBigNumbers: false,
+});
 
 const createMain = (screenSize, callback) => {
     const win = new BrowserWindow({

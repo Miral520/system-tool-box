@@ -14,7 +14,7 @@ $login_height-transition: all 0.3s ease-in-out;
         left: 50%;
         transform: translate(-50%, -50%);
         z-index: 1;
-        width: 60%;
+        width: 500px;
         border-radius: 3px;
         background: #fff;
         overflow: hidden;
@@ -30,6 +30,27 @@ $login_height-transition: all 0.3s ease-in-out;
             width: 100%;
             overflow: hidden;
             box-sizing: border-box;
+        }
+
+        .database_login-head + .database_login-alert {
+            margin-bottom: 20px;
+            padding-top: 10px;
+            padding-bottom: 5px;
+            .ant-alert-message {
+                font-size: 14px;
+                margin: 0;
+                font-weight: bold;
+            }
+            .ant-alert-description {
+                font-size: 12px;
+                line-height: 18px;
+            }
+            .ant-alert-close-icon {
+                top: 8px;
+            }
+            .ant-alert-icon {
+                top: 12px;
+            }
         }
 
         .database_login-head {
