@@ -1,7 +1,7 @@
 {
   "name": "miral_system_tools_box",
   "version": "0.0.1-alpha.2",
-  "main": "electron.config.js",
+  "main": "config/desktop.js",
   "author": "Miral",
   "private": true,
   "scripts": {
