@@ -1,1 +1,1 @@
-node ./launch.js
+node ./launch

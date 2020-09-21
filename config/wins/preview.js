@@ -1,6 +1,6 @@
 const { BrowserWindow } = require('electron');
 const path = require('path');
-const { previewSize } = require('../setting/size');
+const { previewSize } = require('../default/size');
 
 const createPre = (arg, screenSize, win) => {
     // 监听新建预览窗口

@@ -53,10 +53,10 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    "**/*.vue",
+    "**/*.vue"
   ],
   "exclude": [
     "node_modules",
-    "dist",
+    "dist"
   ]
 }

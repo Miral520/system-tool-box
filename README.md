@@ -12,5 +12,5 @@ npm install
 ### 尝试一下
 ```javascript
 npm run prod
+// 或直接执行文件下bin.bat文件(Windows系统下有效)
 ```
-或直接执行文件下bin.bat文件(Windows系统下有效)

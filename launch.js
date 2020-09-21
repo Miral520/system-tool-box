@@ -44,6 +44,7 @@ const serve = callback => {
     const args = baseArgs.concat(['serve']);
     const stdoutStr = 'To create a production build, run npm run build.';
     const stderrStr = '<s> [webpack.Progress] ';
+
     return main(args, stdout => {
         if(stdout.toString(stringType).indexOf(stdoutStr) > -1) {
             console.info('Serve done!');
@@ -66,6 +67,7 @@ const serve = callback => {
 
 let launch = serve(() => {
     const args = baseArgs.concat([param]);
+    
     main(args, stdout => {
         console.info(stdout);
     }, stderr => {

@@ -1,6 +1,6 @@
 const { BrowserWindow, ipcMain, nativeTheme } = require('electron');
 const path = require('path');
-const { mainSize } = require('../setting/size');
+const { mainSize } = require('../default/size');
 const createPre = require('./preview');
 
 const createMain = (screenSize, callback) => {

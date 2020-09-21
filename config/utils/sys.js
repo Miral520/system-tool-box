@@ -1,6 +1,6 @@
 const os = require('os');
 const nodeDiskInfo = require('node-disk-info');
-const profile = require('./profile');
+const profile = require('../default/profile');
 
 // 获取逻辑分区信息
 const logicInfo = nodeDiskInfo.getDiskInfoSync();

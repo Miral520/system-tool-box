@@ -65,6 +65,6 @@ module.exports = {
         .set('store',resolve('src/store'))
         .set('utils',resolve('src/utils'))
         .set('views',resolve('src/views'))
-        .set('workers',resolve('src/workers'));
+        .set('workers',resolve('src/workers'))
   },
 }
