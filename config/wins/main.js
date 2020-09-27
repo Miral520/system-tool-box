@@ -4,22 +4,6 @@ const { mainSize } = require('../default/size');
 const createPre = require('./preview');
 const db = require('../utils/db');
 
-// MySQL连接测试
-db.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'h2data',
-    database: '',
-    port: 3306,
-    localAddress: '',
-    charset: 'UTF8_GENERAL_CI',
-    connectTimeout: 10000,
-    stringifyObjects: false,
-    insecureAuth: false,
-    queryFormat: '',
-    supportBigNumbers: false,
-});
-
 const createMain = (screenSize, callback) => {
     const win = new BrowserWindow({
         width: process.env.NODE_ENV === 'development' ? mainSize.init.width : mainSize.min.width,
@@ -116,6 +100,11 @@ const createMain = (screenSize, callback) => {
         ipcMain.on('closePreview', (e, arg) => {
             preview.destroy();
         });
+    });
+
+    // 数据库访问
+    ipcMain.handle('dataBase', async (event, args) => {
+        return await db[args.cmd](args.data);
     });
 
     return win;

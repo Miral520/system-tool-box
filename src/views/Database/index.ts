@@ -1,6 +1,3 @@
-import moment from 'moment';
-import 'moment/locale/zh-cn';
-
 declare var eStore: any;
 declare var global: any;
 
@@ -157,8 +154,30 @@ export default {
         },
 
         // 登录数据库
-        handleLogin() {
-            
+        async handleLogin() {
+            await global.ipcRenderer.invoke('dataBase', {
+                cmd: 'createConnection', 
+                data: (<any>this).login.value,
+            })
+            .then((res: any) => {
+                if(res.success) {
+                    (<any>this).$message.success(res.data);
+                }
+                else {
+                    const code = res.data.split(': ')[0];
+                    let msg = '';
+                    if(code === 'ER_ACCESS_DENIED_ERROR') {
+                        msg = '访问被拒绝!';
+                    }
+                    else if(code === 'ER_NOT_SUPPORTED_AUTH_MODE') {
+                        msg = '不支持的MySQL加密方式!';
+                    }
+                    else {
+                        msg = '访问出错!';
+                    }
+                    (<any>this).$message.error(msg);
+                }
+            });
         },
     },
     created() {

@@ -1,6 +1,3 @@
-import moment from 'moment';
-import 'moment/locale/zh-cn';
-
 declare var eStore: any;
 declare var global: any;
 

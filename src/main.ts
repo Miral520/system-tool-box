@@ -8,6 +8,7 @@ import vuescroll from 'vuescroll';
 import locale from 'ant-design-vue/es/date-picker/locale/zh_CN';
 import 'ant-design-vue/dist/antd.css';
 import animate from 'animate.css'
+import 'moment/locale/zh-cn';
 
 declare var global: any;
 declare var eStore: any;
